@@ -1,8 +1,39 @@
 import { describe, expect, mock, test } from 'claude-code/testing'
 
+// A fake install: SKILL.md files under /mockhome/.claude/skills/<name>/. The mod builds its library from these.
+const FIXTURE: { name: string; description: string; manual?: true }[] = [
+  { name: 'dataviz', description: 'Create charts, graphs, dashboards and data visualizations.' },
+  { name: 'hallmark', description: 'Design websites and new pages that look designed.' },
+  { name: 'ask-sonner', description: 'Guide to Sonner, the React toast library: toasts behind a modal, dark mode.' },
+  { name: 'egm-draft', description: 'Drafts a formal design document or spec section by section.', manual: true },
+  { name: 'egm-brainstorm', description: 'Interactive ideation and brainstorming for software ideas.', manual: true },
+  { name: 'review-animations', description: 'Reviews animation and motion code against a high craft bar.', manual: true },
+]
+
+function mockSkills(on: any, skills = FIXTURE) {
+  mock.env(on, { HOME: '/mockhome' })
+  const norm = (e: unknown) =>
+    (typeof e === 'string' ? e : String((e as Record<string, unknown>).path ?? '')).replace(/\\/g, '/').replace(/^[A-Za-z]:/, '')
+  on('fs.list', (_$: unknown, e: unknown) => {
+    const p = norm(e)
+    if (p === '/mockhome/.claude/skills') return { value: skills.map(x => ({ name: x.name, kind: 'dir' })) }
+    const hit = skills.find(x => p === `/mockhome/.claude/skills/${x.name}`)
+    return { value: hit ? [{ name: 'SKILL.md', kind: 'file' }] : [] }
+  })
+  on('fs.read', (_$: unknown, e: unknown) => {
+    const p = norm(e)
+    const hit = skills.find(x => p === `/mockhome/.claude/skills/${x.name}/SKILL.md`)
+    if (!hit) return { value: '' }
+    const fm = ['---', `name: ${hit.name}`, `description: ${hit.description}`]
+    if (hit.manual) fm.push('disable-model-invocation: true')
+    return { value: [...fm, '---', '# Body'].join('\n') }
+  })
+}
+
 describe('skill-whisper mod', () => {
   test('pane click reads PromptBox { text, cursor } and preserves user draft', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     on('command.list', () => ({
       value: [
         { name: 'dataviz', description: 'Charts', source: 'builtin' },
@@ -63,6 +94,7 @@ describe('skill-whisper mod', () => {
 
   test('session.start registers only working commands (no dead /whisper-find) and /whisper switches levels', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     const registered: string[] = []
     on('command.register', (_$, e) => {
       registered.push((e as { name: string }).name)
@@ -89,6 +121,7 @@ describe('skill-whisper mod', () => {
 
   test('prompt.compose separates auto vs manual skills, uses user language in full & lite, and filters uninstalled skills', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     on('ui.status', () => ({ value: undefined }))
     on('command.list', () => ({ value: [] }))
     on('prompt.compose', () => ({ sections: [] }))
@@ -104,11 +137,9 @@ describe('skill-whisper mod', () => {
     expect(autoPart).not.toContain('egm:egm-draft')
     expect(autoPart).not.toContain('egm:egm-review')
     expect(manualPart).toContain('/review-animations')
-    expect(manualPart).toContain('/break')
-    expect(manualPart).toContain('/explain-interface')
-    expect(manualPart).toContain('/prototype')
-    expect(manualPart).toContain('/pick-ui-library')
-    expect(manualPart).toContain('/egm:egm-review-loop')
+    expect(manualPart).toContain('/egm-draft')
+    expect(manualPart).toContain('/egm-brainstorm')
+    expect(manualPart).not.toContain('dataviz')
     expect(fullText).toContain("in the user's language")
     expect(fullText).not.toContain('Bu görev için')
 
@@ -128,22 +159,22 @@ describe('skill-whisper mod', () => {
     expect(offOut.sections.length).toBe(0)
   })
 
-  test('prompt.compose filters curated table to only skills installed on this machine', async ($, on) => {
+  test('prompt.compose lists only manual skills that are installed here, read from SKILL.md', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     on('command.list', () => ({
       value: [
         { name: 'dataviz', source: 'builtin' },
-        { name: 'egm:egm-draft', source: 'plugin' },
+        { name: 'egm-draft', source: 'plugin' },
       ],
     }))
     on('prompt.compose', () => ({ sections: [] }))
 
     const out = await $.prompt.compose({ traits: [], promptModel: 'claude-sonnet-5-5', outputStyle: null, tools: [], surfaces: [] } as any)
     const text = out.sections[0]?.text ?? ''
-    expect(text).toContain('dataviz')
-    expect(text).toContain('/egm:egm-draft')
+    expect(text).toContain('/egm-draft: Drafts a formal design document')
+    expect(text).not.toContain('/egm-brainstorm') // on disk, but not installed (not in command.list)
     expect(text).not.toContain('hallmark')
-    expect(text).not.toContain('claude-seo:seo-audit')
   })
 
   test('prompt.attachment dynamically restores dropped descriptions and appends manual skills from SKILL.md', async ($, on) => {
@@ -235,6 +266,7 @@ describe('skill-whisper mod', () => {
 
   test('full mode shows inline ghost hint while typing and Tab prefixes /skill cleanly at index 0', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     on('command.register', () => ({ value: undefined }))
     on('ui.open', () => ({ value: { isPlaced: true } }))
     on('ui.status', () => ({ value: undefined }))
@@ -259,6 +291,7 @@ describe('skill-whisper mod', () => {
     })
 
     await $.session.start({ reason: 'startup', cwd: '/work' } as any)
+    await $.command.run({ command: 'whisper-help', args: '' }) // let the first skill scan finish, as it does a moment after start
 
     // 1. Typing "aylık gelir grafiği çiz" shows inline VS Code-style ghost text `⇥ Tab: /dataviz`
     const editOut = await $.prompt.edit({
@@ -344,6 +377,7 @@ describe('skill-whisper mod', () => {
 
   test('semantic /kelime autocomplete and dynamic out-of-catalog skills work cleanly', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     on('command.list', () => ({
       value: [
         { name: 'dataviz', description: 'Charts and dashboards', source: 'plugin' },
@@ -383,6 +417,7 @@ describe('skill-whisper mod', () => {
 
   test('lite and off modes disable while-typing ghost hints and generic chat triggers zero false positives', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     on('ui.status', () => ({ value: undefined }))
     on('command.list', () => ({
       value: [{ name: 'dataviz', description: 'Charts', source: 'plugin' }],
@@ -445,6 +480,7 @@ describe('skill-whisper mod', () => {
 
   test('desktop fallback: typing puts the suggestion in the status line and a pane button that prefixes it', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     on('command.register', () => ({ value: undefined }))
     on('ui.open', () => ({ value: { isPlaced: true } }))
     const statuses: (string | undefined)[] = []
@@ -466,6 +502,7 @@ describe('skill-whisper mod', () => {
     })
 
     await $.session.start({ reason: 'startup', cwd: '/work' } as any)
+    await $.command.run({ command: 'whisper-help', args: '' }) // let the first skill scan finish, as it does a moment after start
     await $.prompt.edit({ origin: { kind: 'composer' }, text: 'aylık gelir grafiği ', cursor: 20, start: 20, end: 20, inputText: 'çiz' } as any)
     expect(statuses.some(s => typeof s === 'string' && s.includes('/dataviz'))).toBe(true)
 
@@ -479,6 +516,7 @@ describe('skill-whisper mod', () => {
 
   test('typed shortcut: ending the draft with ;; prefixes the suggested skill', async ($, on) => {
     mock.store(on, { level: 'full' })
+    mockSkills(on)
     on('command.register', () => ({ value: undefined }))
     on('ui.open', () => ({ value: { isPlaced: true } }))
     on('ui.status', () => ({ value: undefined }))

@@ -13,3 +13,4 @@ Reading notes:
 - Until v0.6 the mod was called **skill-pilot**, with the commands `/pilot`, `/pilot-help` and `/pilot-ui`. It is now **skill-whisper**, with `/whisper`, `/whisper-help` and `/whisper-ui`.
 - Line references such as `register.tsx:141` point to old versions that are not in this repository.
 - Paths such as `out/run1/` refer to raw run logs. They are not published, because they contain the author's full session setup. The scored summaries are in [`../../eval/results/`](../../eval/results/).
+- `hooks/catalog.ts`, the hand-written skill catalog these reports discuss, was removed in v0.8. The mod now builds its skill library from the installed `SKILL.md` files; only optional match words remain, in `hooks/aliases.ts`.

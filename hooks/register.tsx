@@ -2,17 +2,15 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
 import type { Level, Suggestion } from '../types'
-import { CATALOG } from './catalog'
-import type { SkillEntry } from './catalog'
 import {
   buildAutocompleteSuggestions,
   buildFilledDraft,
   buildGhostDecoration,
   buildHelpText,
   buildKnownCommands,
+  buildLibrary,
   buildRouterSection,
   enrichSkillListing,
-  filterGroups,
   matchSkillsForDraft,
   parseFrontmatter,
   resolveTabRewrite,
@@ -66,8 +64,9 @@ async function scanDiskSkills($: EngineInterface): Promise<Map<string, DiskSkill
 
   const files: string[] = []
   await walkSkillFiles($, `${base}/skills`, 3, files)
-  await walkSkillFiles($, `${base}/plugins/cache`, 5, files)
-  await walkSkillFiles($, `${base}/plugins/synced`, 5, files)
+  // plugins keep skills at different depths, e.g. <mkt>/<plugin>/<version>/.claude/skills/<skill>/SKILL.md
+  await walkSkillFiles($, `${base}/plugins/cache`, 7, files)
+  await walkSkillFiles($, `${base}/plugins/synced`, 7, files)
 
   for (const file of files) {
     const raw = await $.fs.read(file).catch(() => '')
@@ -117,6 +116,7 @@ async function setLevel($: EngineInterface, lv: Level) {
 export const register: Register = on => {
   let diskCache: Map<string, DiskSkill> | null = null
   let cmdCache: CmdEntry[] | null = null
+  let ready: Promise<unknown> | null = null // the first skill scan; ;; waits for it
   let pendingTab: PendingTab | null = null
 
   on('session.start', async ($, e, next) => {
@@ -128,8 +128,10 @@ export const register: Register = on => {
     await $.command.register({ name: 'whisper-ui', description: 'Open the Skill Whisper control center' })
     const saved = await $.store.get('level')
     await setLevel($, isLevel(saved) ? saved : 'full')
-    void listCommands($).then(c => { cmdCache = c })
-    void scanDiskSkills($).then(m => { diskCache = m }).catch(() => {})
+    ready = Promise.all([
+      listCommands($).then(c => { cmdCache = c }),
+      scanDiskSkills($).then(m => { diskCache = m }).catch(() => {}),
+    ])
     void $.ui.open({ id: PANE, title: 'Skill Whisper' })
     return next(e)
   }).catch((_$, e, next) => next(e))
@@ -153,8 +155,8 @@ export const register: Register = on => {
   on('command.run', { command: 'whisper-help' }, async $ => {
     const cmds = await listCommands($)
     cmdCache = cmds
-    const installed = cmds.length > 0 ? new Set(cmds.map(c => c.name)) : null
-    return { text: buildHelpText(filterGroups(CATALOG, installed)) }
+    diskCache ??= await scanDiskSkills($).catch(() => new Map())
+    return { text: buildHelpText(buildLibrary(diskCache, cmds)) }
   })
 
   on('command.run', { command: 'whisper-ui' }, async $ => {
@@ -169,14 +171,15 @@ export const register: Register = on => {
     if (lv !== 'full') return out
     const base = stripTrigger(out.text)
     if (base !== null) {
-      const hit = matchSkillsForDraft(base, CATALOG, diskCache ?? new Map(), cmdCache ?? [], 1)[0]
+      if (ready) await ready
+      const hit = matchSkillsForDraft(base, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)[0]
       if (hit) {
         const text = buildFilledDraft(base, hit.name, buildKnownCommands((cmdCache ?? []).map(c => c.name)))
         void showSuggestion($, undefined)
         return { ...out, text, cursor: text.length }
       }
     }
-    const matches = matchSkillsForDraft(out.text, CATALOG, diskCache ?? new Map(), cmdCache ?? [], 1)
+    const matches = matchSkillsForDraft(out.text, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)
     void showSuggestion($, matches[0])
     const ghost = buildGhostDecoration(out.text, out.cursor, matches[0])
     if (!ghost) return out
@@ -200,7 +203,7 @@ export const register: Register = on => {
     if (diskCache === null) {
       diskCache = await scanDiskSkills($).catch(() => new Map())
     }
-    const matches = matchSkillsForDraft(e.text, CATALOG, diskCache, cmdCache, 3)
+    const matches = matchSkillsForDraft(e.text, buildLibrary(diskCache, cmdCache), diskCache, cmdCache, 3)
     const built = buildAutocompleteSuggestions(e, matches)
     pendingTab = built.pending
     if (built.suggestions.length === 0) return out
@@ -229,7 +232,8 @@ export const register: Register = on => {
     // Same shortcut at send time, in case the box did not take the edit-time rewrite.
     const base = (await read($, level)) === 'full' ? stripTrigger(e.text) : null
     if (base !== null) {
-      const hit = matchSkillsForDraft(base, CATALOG, diskCache ?? new Map(), cmdCache ?? [], 1)[0]
+      if (ready) await ready
+      const hit = matchSkillsForDraft(base, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)[0]
       if (hit) return next({ ...e, text: buildFilledDraft(base, hit.name, buildKnownCommands((cmdCache ?? []).map(c => c.name))) })
     }
     if (pendingTab !== null) {
@@ -265,8 +269,8 @@ export const register: Register = on => {
     if (lv === 'off' || e.traits.includes('bare')) return out
     const cmds = await listCommands($)
     cmdCache = cmds
-    const installed = cmds.length > 0 ? new Set(cmds.map(c => c.name)) : null
-    const groups = filterGroups(CATALOG, installed)
+    diskCache ??= await scanDiskSkills($).catch(() => new Map())
+    const groups = buildLibrary(diskCache, cmds)
     return {
       sections: [
         ...out.sections,
@@ -281,8 +285,8 @@ export const register: Register = on => {
     const sug = await read($, suggestion)
     const cmds = await listCommands($)
     cmdCache = cmds
-    const installed = cmds.length > 0 ? new Set(cmds.map(c => c.name)) : null
-    const visibleGroups = filterGroups(CATALOG, installed)
+    diskCache ??= await scanDiskSkills($).catch(() => new Map())
+    const visibleGroups = buildLibrary(diskCache, cmds)
 
     const pick = async (s: { name: string }) => {
       const { text } = await $.prompt.read()

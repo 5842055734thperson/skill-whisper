@@ -1,6 +1,12 @@
 import type { Level } from '../types'
-import { CATALOG } from './catalog'
-import type { Group } from './catalog'
+import { ALIASES } from './aliases'
+
+export type SkillEntry = {
+  name: string
+  label: string
+  triggers?: readonly string[]
+}
+export type Group = { title: string; skills: SkillEntry[]; manual?: true }
 
 export type DiskSkill = {
   name: string
@@ -67,12 +73,6 @@ export function parseFrontmatter(raw: string): { name?: string; description: str
 
 export function buildKnownCommands(installedNames: Iterable<string>): Set<string> {
   const known = new Set<string>(['whisper', 'whisper-help', 'whisper-ui'])
-  for (const g of CATALOG) {
-    for (const s of g.skills) {
-      known.add(s.name)
-      known.add(shortName(s.name))
-    }
-  }
   for (const n of installedNames) {
     known.add(n)
     known.add(shortName(n))
@@ -164,7 +164,7 @@ const trimDesc = (s: string, max = 160): string => {
  * Supports:
  * 1. Semantic slash queries (`/grafik`, `/sunum`, `/spec`, `/sonner`) when no native command shares that prefix.
  * 2. Natural Turkish & English prose (`"aylık gelir grafiği çiz"`, `"ödeme servisi için formal spec yazalım"`),
- *    covering both curated `CATALOG` entries and dynamically discovered installed skills (`SKILL.md` / `command.list()`).
+ *    using optional ALIASES words and the descriptions of installed skills (`SKILL.md` / `command.list()`).
  */
 export function matchSkillsForDraft(
   draftText: string,
@@ -198,7 +198,7 @@ export function matchSkillsForDraft(
     for (const g of visibleGroups) {
       for (const s of g.skills) {
         let score = 0
-        const pool = [s.label, s.example, ...(s.triggers ?? [])]
+        const pool = [s.label, ...(s.triggers ?? [])]
         for (const item of pool) {
           for (const w of tokenizeWords(foldTr(item))) {
             if (w === q) score = Math.max(score, 12)
@@ -211,7 +211,7 @@ export function matchSkillsForDraft(
       }
     }
 
-    // Also search dynamically installed skills outside CATALOG
+    // Also search installed skills by name and description
     for (const cmd of installedCommands) {
       if (BUILTIN_SKIP.has(cmd.name) || scored.has(cmd.name)) continue
       const disk = diskSkills.get(cmd.name) ?? diskSkills.get(shortName(cmd.name))
@@ -258,8 +258,11 @@ export function matchSkillsForDraft(
 
   for (const g of visibleGroups) {
     for (const s of g.skills) {
-      catalogNames.add(s.name)
-      catalogNames.add(shortName(s.name))
+      // Skills without aliases are matched below from their description instead.
+      if (s.triggers?.length) {
+        catalogNames.add(s.name)
+        catalogNames.add(shortName(s.name))
+      }
       let score = 0
 
       // Exact mention of distinctive skill shortName (e.g. "dataviz", "hallmark", "teardown", "humanizer")
@@ -315,8 +318,9 @@ export function matchSkillsForDraft(
       .split(/[-_.:]+/)
       .filter(p => p.length >= 4 && !GENERIC_SKILL_WORDS.has(p))
 
+    // Name parts match whole words only ("extra" must not match "extract", "brain" not "brainstorm").
     for (const part of nameParts) {
-      if (draftWords.some(dw => wordMatchesStem(dw, part))) {
+      if (draftWords.some(dw => dw === part || dw === `${part}s` || dw === `${part}es`)) {
         score += 9
       }
     }
@@ -425,35 +429,20 @@ export function buildGhostDecoration(
 }
 
 export function buildRouterSection(level: Exclude<Level, 'off'>, groups: readonly Group[]): string {
-  const autoGroups = groups.filter(g => !g.manual)
-  const manualGroups = groups.filter(g => g.manual)
-
-  const autoBlock =
-    autoGroups.length === 0
-      ? ''
-      : [
-          '### Automatic Skills',
-          '| Task | Skill(s) |',
-          '|---|---|',
-          ...autoGroups.map(g => `| ${g.when} | ${g.skills.map(s => s.name).join(', ')} |`),
-        ].join('\n')
-
-  const manualBlock =
-    manualGroups.length === 0
+  const manual = groups.filter(g => g.manual).flatMap(g => g.skills)
+  // Automatic skills are already in the host's skill listing (with restored descriptions), so they are not repeated here.
+  const tables =
+    manual.length === 0
       ? ''
       : [
           '### Manual-Only Skills (Cannot be invoked by model; tell user to run /name)',
-          '| Task | Command(s) |',
-          '|---|---|',
-          ...manualGroups.map(g => `| ${g.when} | ${g.skills.map(s => `/${s.name}`).join(', ')} |`),
+          ...manual.map(s => `- /${s.name}: ${s.label}`),
         ].join('\n')
-
-  const tables = [autoBlock, manualBlock].filter(Boolean).join('\n\n')
 
   if (level === 'lite') {
     return `# Skill Whisper (lite)
-The user has installed skills and wants help noticing when one fits. At the start of each new task, check the tables below and the skill listing.
-- [Automatic Skills]: If an automatic skill fits, mention in one line in the user's language which skill fits and why, and ask whether to invoke it; do not invoke it unasked.
+The user has installed skills and wants help noticing when one fits. At the start of each new task, check the skill listing and the manual-only list below.
+- [Automatic Skills] (the skill listing): If a skill there fits, mention in one line in the user's language which skill fits and why, and ask whether to invoke it; do not invoke it unasked.
 - [Manual-Only Skills]: If a manual skill fits, tell the user in one line in the user's language to run \`/<name>\` and why; do not invoke it and do not execute its workflow yourself.
 - If no skill fits, say nothing about skills. When the user's message starts with \`/<skill>\`, that skill was chosen by hand: just follow it.
 
@@ -461,8 +450,8 @@ ${tables}`
   }
 
   return `# Skill Whisper (full)
-The user has installed skills and wants them used. At the start of each new task, check the tables below and the skill listing.
-- [Automatic Skills]: If an automatic skill fits, open your reply with one line "💬 Skill: <name> — <why, a few words>" in the user's language, then invoke it with the Skill tool and follow it. If two fit, pick the more specific one and name the other as an option.
+The user has installed skills and wants them used. At the start of each new task, check the skill listing and the manual-only list below.
+- [Automatic Skills] (the skill listing): If a skill there fits, open your reply with one line "💬 Skill: <name> — <why, a few words>" in the user's language, then invoke it with the Skill tool and follow it. If two fit, pick the more specific one and name the other as an option.
 - [Manual-Only Skills]: If a manual skill fits, YOU CANNOT INVOKE IT WITH THE SKILL TOOL. Open your reply in the user's language telling them to run \`/<name>\` (for example "💬 Skill: \`/<name>\` — <why>"), and do NOT simulate or execute its workflow yourself unasked.
 - If no skill fits, say nothing about skills. When the user's message starts with \`/<skill>\`, that skill was chosen by hand: just follow it without repeating the 💬 banner. A skill's own "ask first" steps still apply.
 
@@ -471,15 +460,15 @@ ${tables}`
 
 export function buildHelpText(groups: readonly Group[]): string {
   return [
-    '💬 Skill Whisper: installed skills with example requests',
+    '💬 Skill Whisper: installed skills',
     '',
     ...groups.flatMap(g => [
       g.manual ? `${g.title} [manual: run /command]` : g.title,
-      ...g.skills.map(s => `  ${s.name.padEnd(32)} "${s.example}"`),
+      ...g.skills.map(s => `  ${s.name.padEnd(32)} ${s.label}`),
       '',
     ]),
     'Tip (full level): the suggested skill shows in the status line while you type; end your draft with ;; to put /skill first.',
-    'Kontrol merkezi: /whisper-ui · Seviye: /whisper full | lite | off',
+    'Control center: /whisper-ui · Level: /whisper full | lite | off',
   ].join('\n')
 }
 
@@ -566,4 +555,41 @@ export const TRIGGER = ';;'
 export function stripTrigger(text: string): string | null {
   const t = text.trimEnd()
   return t.endsWith(TRIGGER) ? t.slice(0, -TRIGGER.length).trimEnd() : null
+}
+
+/**
+ * The skill library, built from what is installed: every installed command that has a SKILL.md,
+ * grouped by plugin, with manual-only skills in their own groups. Nothing here is hand-written;
+ * ALIASES only adds optional match words.
+ */
+export function buildLibrary(
+  diskSkills: ReadonlyMap<string, DiskSkill>,
+  installedCommands: readonly { name: string; description?: string }[],
+): Group[] {
+  const names =
+    installedCommands.length > 0
+      ? installedCommands.map(c => c.name)
+      : [...new Set([...diskSkills.values()].map(d => d.name))]
+  const groups = new Map<string, Group>()
+  for (const name of names) {
+    if (BUILTIN_SKIP.has(name)) continue
+    const aliases = ALIASES[name] ?? ALIASES[shortName(name)]
+    const found = diskSkills.get(name) ?? diskSkills.get(shortName(name))
+    // No SKILL.md: a plain slash command, unless ALIASES names it (built-in skills such as dataviz have no file).
+    if (!found && !aliases) continue
+    const disk = found ?? {
+      name,
+      description: installedCommands.find(c => c.name === name)?.description ?? '',
+      manual: false,
+    }
+    const plugin = name.includes(':') ? name.slice(0, name.lastIndexOf(':')) : ''
+    const title = `${plugin || 'Personal and built-in skills'}${disk.manual ? ' (manual-only)' : ''}`
+    const g = groups.get(title) ?? { title, skills: [], ...(disk.manual ? { manual: true as const } : {}) }
+    if (g.skills.some(x => x.name === name)) continue
+    g.skills.push({ name, label: trimDesc(disk.description || name, 70), ...(aliases ? { triggers: aliases } : {}) })
+    groups.set(title, g)
+  }
+  return [...groups.values()]
+    .map(g => ({ ...g, skills: g.skills.sort((a, b) => a.name.localeCompare(b.name)) }))
+    .sort((a, b) => Number(Boolean(a.manual)) - Number(Boolean(b.manual)) || a.title.localeCompare(b.title))
 }

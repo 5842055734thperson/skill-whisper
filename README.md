@@ -23,6 +23,7 @@ In the desktop app, where `/plugin` does not run: click **+** next to the prompt
 
 ## What it does
 
+- **A skill library built from your install.** At session start the mod reads the `SKILL.md` files of the skills you have installed (name, description, manual-only flag) and builds its list from them. There is no hand-written catalog: install or remove a skill and the list follows (run `/reload-plugins` to refresh it mid-session).
 - **Routing for manual-only skills.** Skills marked `disable-model-invocation: true` (for example the `egm` design skills, `/variant`, `/prototype`) cannot be started by Claude. Without help, Claude does that work itself instead of telling you the skill exists. Skill Whisper lists these skills separately and tells Claude to answer "run `/<name>`" rather than imitate them.
 - **Restores dropped skill descriptions.** When many skills are installed, Claude Code lists some of them by name only. Skill Whisper fills short descriptions back into that list (`prompt.attachment` on `skill_listing`), within a size cap.
 - **Suggestion while you type.** The skill that fits your draft shows in the status line, for example `💬 /dataviz — charts and dashboards · end with ;;`. It also shows as a button at the top of the `/whisper-ui` pane.
@@ -38,8 +39,8 @@ Everything runs locally. The mod reads `SKILL.md` front matter under your Claude
 
 ## Limits
 
-- The curated routing table (`hooks/catalog.ts`) was written for the author's set of skills. Skills you do not have are filtered out. Skills it does not list still get the manual-only routing and description restore, but no curated "when to use" line.
-- While-typing matching knows English words and some Turkish words (the author's language).
+- Built-in Claude Code skills that have no `SKILL.md` on disk (for example `loop`, `schedule`) are not suggested while typing. Claude still sees them in its own skill list.
+- Matching while typing uses each skill's name and description, so it works best with English words. [`hooks/aliases.ts`](hooks/aliases.ts) adds optional extra words per skill (English and Turkish from the author); add your own there.
 - Matching while typing is keyword based, so it can miss or suggest the wrong skill.
 
 ## How it was built
