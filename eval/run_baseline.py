@@ -61,7 +61,7 @@ def score(case, invoked, text):
     if hit:
         return "INVOKED", hit
     # a bare word like "learn" is not a mention; require /name or `name`
-    named = [e for e in exp if any(m in text for m in (f"/{short(e)}", f"`{short(e)}`", f"`{e}`"))]
+    named = [e for e in exp if any(m in text for m in (f"/{e}", f"/{short(e)}", f"`{short(e)}`", f"`{e}`"))]
     if named:
         return "NAMED_ONLY", named
     return ("WRONG_SKILL" if invoked else "NO_SKILL"), invoked

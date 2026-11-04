@@ -60,6 +60,9 @@ Headline numbers, 30 prompts, `claude -p`, one run each:
 | No mod | 8 | 0 | 10 |
 | Old routing table | 15 | 0 | 10 |
 | Table with a manual-only section (6 of the 30 cases re-run, Sonnet) | — | 4 | — |
+| **v0.8: library built from installed skills** (20 skill prompts, Opus) | **15** | **3** | not re-run |
+
+In v0.8 the one auto miss (a slide deck) went to the host's Artifact tool, and the one manual miss (a design doc) went to the `docs` skill instead of `/egm:egm-draft`.
 
 These are small samples (n = 1, prompts written by the author). Read the caveats in the reports before relying on them.
 

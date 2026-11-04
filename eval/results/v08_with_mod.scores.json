@@ -1,0 +1,285 @@
+{
+ "tally": {
+  "INVOKED": 15,
+  "NO_SKILL": 1,
+  "NAMED_ONLY": 3,
+  "WRONG_SKILL": 1
+ },
+ "rows": [
+  {
+   "id": 1,
+   "manual": false,
+   "expect": [
+    "diagram-design"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "diagram-design"
+   ],
+   "all_skill_calls": [
+    "diagram-design"
+   ]
+  },
+  {
+   "id": 2,
+   "manual": false,
+   "expect": [
+    "dataviz"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "dataviz"
+   ],
+   "all_skill_calls": [
+    "dataviz"
+   ]
+  },
+  {
+   "id": 3,
+   "manual": false,
+   "expect": [
+    "teardown"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "teardown"
+   ],
+   "all_skill_calls": [
+    "teardown"
+   ]
+  },
+  {
+   "id": 4,
+   "manual": false,
+   "expect": [
+    "hallmark",
+    "frontend-design:frontend-design"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "hallmark"
+   ],
+   "all_skill_calls": [
+    "hallmark"
+   ]
+  },
+  {
+   "id": 5,
+   "manual": false,
+   "expect": [
+    "better-accessibility"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "better-accessibility"
+   ],
+   "all_skill_calls": [
+    "better-accessibility"
+   ]
+  },
+  {
+   "id": 6,
+   "manual": false,
+   "expect": [
+    "better-colors"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "better-colors"
+   ],
+   "all_skill_calls": [
+    "better-colors"
+   ]
+  },
+  {
+   "id": 7,
+   "manual": false,
+   "expect": [
+    "animate"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "animate"
+   ],
+   "all_skill_calls": [
+    "animate"
+   ]
+  },
+  {
+   "id": 8,
+   "manual": false,
+   "expect": [
+    "remove-animations"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "remove-animations"
+   ],
+   "all_skill_calls": [
+    "remove-animations"
+   ]
+  },
+  {
+   "id": 9,
+   "manual": false,
+   "expect": [
+    "anthropic-skills:humanizer"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "anthropic-skills:humanizer"
+   ],
+   "all_skill_calls": [
+    "anthropic-skills:humanizer"
+   ]
+  },
+  {
+   "id": 10,
+   "manual": false,
+   "expect": [
+    "anthropic-skills:learn",
+    "learning-framework:learn"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "anthropic-skills:learn"
+   ],
+   "all_skill_calls": [
+    "anthropic-skills:learn"
+   ]
+  },
+  {
+   "id": 11,
+   "manual": false,
+   "expect": [
+    "claude-seo:seo-audit",
+    "claude-seo:seo"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "claude-seo:seo-audit"
+   ],
+   "all_skill_calls": [
+    "claude-seo:seo-audit"
+   ]
+  },
+  {
+   "id": 12,
+   "manual": false,
+   "expect": [
+    "deploy-to-vercel",
+    "vercel-cli-with-tokens"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "deploy-to-vercel"
+   ],
+   "all_skill_calls": [
+    "deploy-to-vercel"
+   ]
+  },
+  {
+   "id": 13,
+   "manual": false,
+   "expect": [
+    "ui-ux-pro-max:slides",
+    "anthropic-skills:pptx"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 14,
+   "manual": false,
+   "expect": [
+    "anthropic-skills:docx"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "anthropic-skills:docx"
+   ],
+   "all_skill_calls": [
+    "anthropic-skills:docx"
+   ]
+  },
+  {
+   "id": 15,
+   "manual": false,
+   "expect": [
+    "break-ui"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "break-ui"
+   ],
+   "all_skill_calls": [
+    "break-ui"
+   ]
+  },
+  {
+   "id": 16,
+   "manual": false,
+   "expect": [
+    "mobile-native"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "mobile-native"
+   ],
+   "all_skill_calls": [
+    "mobile-native"
+   ]
+  },
+  {
+   "id": 17,
+   "manual": true,
+   "expect": [
+    "egm:egm-brainstorm"
+   ],
+   "verdict": "NAMED_ONLY",
+   "detail": [
+    "egm:egm-brainstorm"
+   ],
+   "all_skill_calls": []
+  },
+  {
+   "id": 18,
+   "manual": true,
+   "expect": [
+    "egm:egm-draft"
+   ],
+   "verdict": "WRONG_SKILL",
+   "detail": [
+    "anthropic-skills:docs"
+   ],
+   "all_skill_calls": [
+    "anthropic-skills:docs"
+   ]
+  },
+  {
+   "id": 19,
+   "manual": true,
+   "expect": [
+    "egm:egm-review"
+   ],
+   "verdict": "NAMED_ONLY",
+   "detail": [
+    "egm:egm-review"
+   ],
+   "all_skill_calls": []
+  },
+  {
+   "id": 20,
+   "manual": true,
+   "expect": [
+    "variant"
+   ],
+   "verdict": "NAMED_ONLY",
+   "detail": [
+    "variant"
+   ],
+   "all_skill_calls": []
+  }
+ ]
+}
