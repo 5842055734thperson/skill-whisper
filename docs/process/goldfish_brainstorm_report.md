@@ -2,7 +2,7 @@
 
 **Mode:** BRAINSTORM
 **Concept:** Skill Pilot v1 suggests up to 3 installed skills while the user types and inserts `/skill-name ` on click.
-**Inputs:** ~/.claude/my-mods/skill-pilot/hooks/register.tsx and claude-code.d.ts (2.1.317 bundle)
+**Inputs:** the v0.2 `hooks/register.tsx` (not in this repository) and the Claude Code 2.1.317 mod API types (`claude-code.d.ts`)
 
 ## Reviewer Status
 

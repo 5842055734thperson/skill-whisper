@@ -1,8 +1,8 @@
 # Review of the Antigravity changes (2026-11-04)
 
-Scope: everything in `antigravity/`. Checks run:
+Scope: the v0.3.x rework made with the Antigravity editor (files `register_fixed.tsx`, `pilot_engine.ts`, `test_draft.ts`, which were later replaced by the mod in [`hooks/`](../../hooks/)). Checks run:
 - read every file;
-- diffed `register_fixed.tsx` against the installed `my-mods/skill-pilot/hooks/register.tsx`;
+- diffed `register_fixed.tsx` against the then-installed v0.3 `register.tsx`;
 - ran `claude plugin validate` on a copy of the mod with that file in place: it passes, with one warning (no icon);
 - ran `node --test test_draft.ts`: 5/5 pass;
 - reproduced the pane-click bug in node.
@@ -20,7 +20,7 @@ I did not run tsc (it is not installed) or `claude plugin test`, and I made no l
 3. **Two manual-only skills sit in the auto table.**
    - `review-animations` is in the Animation group, and its SKILL.md has `disable-model-invocation: true`. The router tells the model to invoke it, which is the same bug class as v0.3's egm entries.
    - Five manual skills are not listed at all: `break`, `explain-interface`, `prototype`, `pick-ui-library` and `egm:egm-review-loop`. The diff silently dropped `break` and `explain-interface` from v0.3.
-4. **The `lite` text still hard-codes a Turkish sentence** ("Bu görev için /<skill> komutunu çalıştırabilirsiniz."). This contradicts the report's "in the user's language" fix. The live run happened before that fix: `summary.json` is from 17:06 and the fix is from 17:07, and the run outputs show Turkish "🧭 Öneri" lines in answers to English prompts.
+4. **The `lite` text still hard-codes a Turkish sentence** ("Bu görev için /<skill> komutunu çalıştırabilirsiniz.", "For this task you can run /<skill>."). This contradicts the report's "in the user's language" fix. The live run happened before that fix: `summary.json` is from 17:06 and the fix is from 17:07, and the run outputs show Turkish "🧭 Öneri" lines in answers to English prompts.
 5. **The tests do not cover the mod.**
    - `test_draft.ts` tests `pilot_engine.ts`, which `register_fixed.tsx` does not import. The mod re-implements the fill inline, with bug 1, and no test catches it.
    - Test 4 only asserts that the catalog contains the answers to the benchmark: it checks that the table was written for the test set, not that routing works.
@@ -36,7 +36,7 @@ I did not run tsc (it is not installed) or `claude plugin test`, and I made no l
   - Manual cases ran at `--max-turns 1`.
   - C fed the router text through `--append-system-prompt`. That tests the prompt text, not the mod code (`prompt.compose`).
 - **The manual wins are in-sample.** The table names exactly the four tested manual skills with descriptions written around the test prompts, and `pptx`/`docx` were added after cases 13 and 14. Whether a manual or long-tail skill **outside** the table gets surfaced is untested. That is the main problem for a mod published to people with other skills installed.
-- **n = 1 run, 6 cases.** "Kanıtlandı / proven" is too strong; "promising" fits.
+- **n = 1 run, 6 cases.** "Kanıtlandı" ("proven") is too strong; "promising" fits.
 - **"0 ms, $0.00" is only the router's cost.** The table still adds ~700 tokens to every turn.
 
 ## What holds up
@@ -55,7 +55,7 @@ I did not run tsc (it is not installed) or `claude plugin test`, and I made no l
 
 ---
 
-# Re-review: v0.4 (`antigravity/skill-pilot/`, 2026-11-04 17:56)
+# Re-review: v0.4 (2026-11-04 17:56)
 
 Checks run:
 - read `register.tsx`, `logic.ts`, `catalog.ts`, the manifest, README, `run_mod_eval.mjs`, the smoke outputs and the updated `evaluation_and_plan.md`;

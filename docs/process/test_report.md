@@ -6,7 +6,7 @@
 
 ## 1. Setup
 
-- **Prompts:** 30 English requests in [prompts.jsonl](prompts.jsonl).
+- **Prompts:** 30 English requests in [prompts.jsonl](../../eval/prompts.jsonl).
   - 16 need a skill that the model can start by itself.
   - 4 need a manual-only skill (`disable-model-invocation`): `egm:egm-brainstorm`, `egm:egm-draft`, `egm:egm-review`, `variant`.
   - 10 need no skill.
@@ -14,10 +14,10 @@
 - **Environment:** Claude Code 2.1.316, main model Opus 5.5, 143 skills installed.
 - **Headless runs:** `claude -p`, at most 2 turns. Tools that change things (Bash, Write, Edit, Agent, web) are disallowed. Each run starts in an empty folder.
 - **Three conditions:**
-  - **Baseline:** skill-pilot turned off ([run_baseline.py](run_baseline.py) `run1`).
-  - **v0.3 mod on:** the current mod at level `full`. It adds a hand-written routing table of about 40 skills to the system prompt every turn and tells the model to invoke a matching skill ([run_baseline.py](run_baseline.py) `pilot_v03 pilot`).
-  - **`/pilot` prototype:** a cheap model gets the full catalog and the request, and returns up to 3 skills as JSON ([rank.py](rank.py)).
-    - The catalog is built by [build_catalog.py](build_catalog.py): 143 skills, 15 of them manual-only, with descriptions cut to 300 characters.
+  - **Baseline:** skill-pilot turned off ([run_baseline.py](../../eval/run_baseline.py) `run1`).
+  - **v0.3 mod on:** the current mod at level `full`. It adds a hand-written routing table of about 40 skills to the system prompt every turn and tells the model to invoke a matching skill ([run_baseline.py](../../eval/run_baseline.py) `pilot_v03 pilot`).
+  - **`/pilot` prototype:** a cheap model gets the full catalog and the request, and returns up to 3 skills as JSON ([rank.py](../../eval/rank.py)).
+    - The catalog is built by [build_catalog.py](../../eval/build_catalog.py): 143 skills, 15 of them manual-only, with descriptions cut to 300 characters.
     - The model is called through `claude -p --model haiku` with no tools, no plugins and a custom system prompt.
     - A pick is shown when its confidence is 0.6 or higher.
 - **Catalog truncation:** measured with `/context` in a fresh session.

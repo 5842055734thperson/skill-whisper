@@ -198,7 +198,7 @@ export function matchSkillsForDraft(
     for (const g of visibleGroups) {
       for (const s of g.skills) {
         let score = 0
-        const pool = [s.tr, s.example, ...(s.triggers ?? [])]
+        const pool = [s.label, s.example, ...(s.triggers ?? [])]
         for (const item of pool) {
           for (const w of tokenizeWords(foldTr(item))) {
             if (w === q) score = Math.max(score, 12)
@@ -206,7 +206,7 @@ export function matchSkillsForDraft(
           }
         }
         if (score > 0) {
-          scored.set(s.name, { name: s.name, reason: s.tr, manual: Boolean(g.manual), score })
+          scored.set(s.name, { name: s.name, reason: s.label, manual: Boolean(g.manual), score })
         }
       }
     }
@@ -289,7 +289,7 @@ export function matchSkillsForDraft(
       if (score >= 7) {
         results.set(s.name, {
           name: s.name,
-          reason: s.tr,
+          reason: s.label,
           manual: Boolean(g.manual),
           score,
         })
@@ -366,7 +366,7 @@ export function buildAutocompleteSuggestions(
       suggestions: matches.map(m => ({
         text: isSlashQuery ? `/${m.name}${sep}` : `/${m.name} ${event.token}`,
         label: `/${m.name}`,
-        description: `💬 ${m.reason}${m.manual ? ' [elle]' : ''} · Tab ile başa ekle`,
+        description: `💬 ${m.reason}${m.manual ? ' [manual]' : ''} · Tab to put it first`,
       })),
       pending: null,
     }
@@ -377,7 +377,7 @@ export function buildAutocompleteSuggestions(
     suggestions: matches.map(m => ({
       text: `${event.token} /${m.name}`,
       label: `/${m.name}`,
-      description: `💬 ${m.reason}${m.manual ? ' [elle]' : ''} · Tab ile başa ekle`,
+      description: `💬 ${m.reason}${m.manual ? ' [manual]' : ''} · Tab to put it first`,
     })),
     pending: {
       prefix: event.text.slice(0, event.start),
@@ -415,7 +415,7 @@ export function buildGhostDecoration(
   if (cursor <= 0 || cursor > text.length || /\s/.test(text.charAt(cursor - 1))) {
     return null
   }
-  const tag = topMatch.manual ? ' [elle]' : ''
+  const tag = topMatch.manual ? ' [manual]' : ''
   return {
     start: text.length,
     end: text.length,
@@ -471,14 +471,14 @@ ${tables}`
 
 export function buildHelpText(groups: readonly Group[]): string {
   return [
-    "💬 Skill Whisper: kurulu skill'ler ve örnek istekler",
+    '💬 Skill Whisper: installed skills with example requests',
     '',
     ...groups.flatMap(g => [
-      g.manual ? `${g.title} [elle: /komut]` : g.title,
+      g.manual ? `${g.title} [manual: run /command]` : g.title,
       ...g.skills.map(s => `  ${s.name.padEnd(32)} "${s.example}"`),
       '',
     ]),
-    'İpucu (full mod): Yazarken önerilen skill satır sonunda görünür; Tab tuşuyla başa /skill ekleyebilirsin.',
+    'Tip (full level): the suggested skill shows in the status line while you type; end your draft with ;; to put /skill first.',
     'Kontrol merkezi: /whisper-ui · Seviye: /whisper full | lite | off',
   ].join('\n')
 }

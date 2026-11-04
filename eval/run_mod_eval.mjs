@@ -1,5 +1,5 @@
 /**
- * End-to-end live runner loading the REAL mod directory (`--plugin-dir ./skill-pilot`),
+ * End-to-end live runner loading the REAL mod from this repository (`--plugin-dir <repo root>`),
  * NOT `--append-system-prompt`.
  *
  * Modes:
@@ -12,7 +12,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PLUGIN_DIR = path.join(__dirname, 'skill-pilot');
+const PLUGIN_DIR = path.join(__dirname, '..'); // the repository root is the mod
+// An installed copy of the mod is turned off for these runs, so only the repository copy loads.
+const INSTALLED_ID = process.env.SKILL_WHISPER_ID || 'skill-whisper@skill-whisper';
 const EMPTY_CWD = path.join(__dirname, 'empty_cwd');
 fs.mkdirSync(EMPTY_CWD, { recursive: true });
 
@@ -49,7 +51,11 @@ function loadCases() {
     ];
   }
 
-  const base30 = JSON.parse(fs.readFileSync(path.join(__dirname, 'benchmark_prompts.json'), 'utf8'));
+  const base30 = fs
+    .readFileSync(path.join(__dirname, 'prompts.jsonl'), 'utf8')
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map(l => JSON.parse(l));
   return [...base30, ...heldOut];
 }
 
@@ -84,11 +90,11 @@ function scoreCase(c, invoked, text) {
 function runOne(c) {
   const outPath = path.join(OUT_DIR, `case_${String(c.id).padStart(3, '0')}.jsonl`);
   if (!fs.existsSync(outPath)) {
-    // Disable the old installed v0.3 skill-pilot so ONLY `--plugin-dir ./skill-pilot` (v0.4) runs.
+    // Turn off an installed copy so ONLY the `--plugin-dir` copy runs.
     // In --full mode, keep ponytail in its default state to match baseline; in --smoke mode disable ponytail to save quota.
     const enabledPlugins = isFull
-      ? { 'skill-pilot@5842055734thperson-mods': false }
-      : { 'skill-pilot@5842055734thperson-mods': false, 'ponytail@ponytail': false };
+      ? { [INSTALLED_ID]: false }
+      : { [INSTALLED_ID]: false, 'ponytail@ponytail': false };
 
     const args = [
       '-p', c.prompt,
@@ -152,7 +158,7 @@ function runOne(c) {
     turns,
     terminalReason,
     cost: Number(cost.toFixed(4)),
-    skillPilotLoaded: loadedPlugins.includes('skill-pilot'),
+    skillWhisperLoaded: loadedPlugins.includes('skill-whisper'),
     preview: text.trim().slice(0, 180)
   };
 }
@@ -168,7 +174,7 @@ fs.writeFileSync(path.join(OUT_DIR, 'summary.json'), JSON.stringify(summary, nul
 console.table(
   summary.map(s => ({
     id: s.id,
-    modLoaded: s.skillPilotLoaded,
+    modLoaded: s.skillWhisperLoaded,
     verdict: s.verdict,
     pass: s.pass,
     invoked: s.invoked.join(','),

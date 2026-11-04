@@ -81,7 +81,7 @@ describe('skill-whisper mod', () => {
     expect((switched as { text: string }).text).toContain('lite')
 
     const bad = await $.command.run({ command: 'whisper', args: 'unknown-arg' })
-    expect((bad as { text: string }).text).toContain('Bilinmeyen seviye')
+    expect((bad as { text: string }).text).toContain('Unknown level')
 
     const help = await $.command.run({ command: 'whisper-help', args: '' })
     expect((help as { text: string }).text).not.toContain('/whisper-find')
@@ -312,7 +312,7 @@ describe('skill-whisper mod', () => {
       mode: 'replace',
     })
 
-    // 4. Manual-only skill (`egm:egm-draft`) shows `[elle]` tag and Tab-prefixes `/egm:egm-draft`
+    // 4. Manual-only skill (`egm:egm-draft`) shows `[manual]` tag and Tab-prefixes `/egm:egm-draft`
     const manualEdit = await $.prompt.edit({
       origin: { kind: 'composer' },
       text: 'ödeme servisi için formal spec ',
@@ -321,7 +321,7 @@ describe('skill-whisper mod', () => {
       end: 31,
       inputText: 'yazalım',
     } as any)
-    expect(manualEdit.decorations?.[0]?.virtualText).toBe('  ⇥ Tab: /egm:egm-draft [elle]')
+    expect(manualEdit.decorations?.[0]?.virtualText).toBe('  ⇥ Tab: /egm:egm-draft [manual]')
 
     const manualAc = await $.prompt.autocomplete({
       text: 'ödeme servisi için formal spec yazalım',

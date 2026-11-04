@@ -1,0 +1,7 @@
+# local eval output: raw runs hold your whole session setup
+eval/out/
+eval/out_mod_*/
+eval/empty_cwd/
+eval/catalog.json
+.claude-plugin/types/
+__pycache__/

@@ -1,6 +1,6 @@
 # Goldfish Review Report
 
-**Target:** `~/Desktop/things/skill-pilot-eval/test_report.md` (full file)
+**Target:** [`test_report.md`](test_report.md) (full file)
 **Round:** 1
 
 ## Reviewer Status

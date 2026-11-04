@@ -1,4 +1,4 @@
-"""Baseline: does Claude Code pick the right skill with skill-pilot turned off?
+"""Baseline: does Claude Code pick the right skill with skill-whisper turned off?
 
 Runs each prompt in prompts.jsonl through `claude -p` (headless, tools that change
 anything disallowed, 2 turns max), records which skills the Skill tool was called
@@ -11,13 +11,14 @@ from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LABEL = sys.argv[1] if len(sys.argv) > 1 else "run1"
-PILOT_ON = len(sys.argv) > 2 and sys.argv[2] == "pilot"  # keep the current skill-pilot mod enabled
+PILOT_ON = len(sys.argv) > 2 and sys.argv[2] == "pilot"  # keep the installed skill-whisper mod enabled
+PLUGIN_ID = os.environ.get("SKILL_WHISPER_ID", "skill-whisper@skill-whisper")  # id of your installed copy
 OUT = os.path.join(HERE, "out", LABEL)
 os.makedirs(OUT, exist_ok=True)
 WORK = tempfile.mkdtemp(prefix="pilot-eval-")  # empty cwd, no project files
 
 CMD = ["claude", "-p", None,
-       "--settings", json.dumps({"enabledPlugins": {"skill-pilot@5842055734thperson-mods": PILOT_ON}}),
+       "--settings", json.dumps({"enabledPlugins": {PLUGIN_ID: PILOT_ON}}),
        "--max-turns", "2",
        "--disallowedTools", "Bash,PowerShell,Write,Edit,NotebookEdit,Agent,WebSearch,WebFetch",
        "--output-format", "stream-json", "--verbose", "--no-session-persistence"]

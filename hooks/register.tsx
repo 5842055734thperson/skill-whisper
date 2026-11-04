@@ -105,7 +105,7 @@ async function showSuggestion($: EngineInterface, m: SkillMatch | undefined) {
   if (key === shown) return
   shown = key
   await update($, suggestion, () => (m ? { name: m.name, reason: m.reason, manual: m.manual } : null))
-  $.ui.status(m ? `💬 /${m.name}${m.manual ? ' [elle]' : ''} — ${m.reason} · sona ;; yaz` : '💬 whisper: full')
+  $.ui.status(m ? `💬 /${m.name}${m.manual ? ' [manual]' : ''} — ${m.reason} · end with ;;` : '💬 whisper: full')
 }
 
 async function setLevel($: EngineInterface, lv: Level) {
@@ -124,7 +124,7 @@ export const register: Register = on => {
     cmdCache = null
     pendingTab = null
     await $.command.register({ name: 'whisper', description: 'Skill Whisper level: full, lite or off' })
-    await $.command.register({ name: 'whisper-help', description: 'List installed skills with example requests (Turkish)' })
+    await $.command.register({ name: 'whisper-help', description: 'List installed skills with example requests' })
     await $.command.register({ name: 'whisper-ui', description: 'Open the Skill Whisper control center' })
     const saved = await $.store.get('level')
     await setLevel($, isLevel(saved) ? saved : 'full')
@@ -143,11 +143,11 @@ export const register: Register = on => {
 
   on('command.run', { command: 'whisper' }, async ($, e) => {
     const want = e.args.trim().toLowerCase()
-    if (!want) return { text: `Skill Whisper seviyesi: ${await read($, level)}. Değiştirmek için: /whisper full | lite | off` }
-    if (!isLevel(want)) return { text: `Bilinmeyen seviye "${want}". Seçenekler: full, lite, off` }
+    if (!want) return { text: `Skill Whisper level: ${await read($, level)}. Change it with: /whisper full | lite | off` }
+    if (!isLevel(want)) return { text: `Unknown level "${want}". Options: full, lite, off` }
     pendingTab = null
     await setLevel($, want)
-    return { text: `Skill Whisper: ${want}. Bir sonraki mesajından itibaren geçerli.` }
+    return { text: `Skill Whisper: ${want}. Applies from your next message.` }
   })
 
   on('command.run', { command: 'whisper-help' }, async $ => {
@@ -159,7 +159,7 @@ export const register: Register = on => {
 
   on('command.run', { command: 'whisper-ui' }, async $ => {
     const { isPlaced } = await $.ui.open({ id: PANE, title: 'Skill Whisper' })
-    return { text: isPlaced ? 'Skill Whisper kontrol merkezi açıldı.' : 'Bu ekran paneli gösteremiyor; /whisper-help listeyi metin olarak verir.' }
+    return { text: isPlaced ? 'Skill Whisper control center opened.' : 'This screen cannot show the pane; /whisper-help gives the list as text.' }
   })
 
   // Inline VS Code-style ghost hint at the end of the draft while typing in `full` mode (<1ms, pure in-memory)
@@ -292,7 +292,7 @@ export const register: Register = on => {
       const nextText = buildFilledDraft(text, s.name, known)
       const res = await $.prompt.fill({ text: nextText, mode: 'replace' })
       if (!res.isFilled) {
-        $.ui.status(`💬 whisper: mesaj kutusu kullanılamıyor (/${s.name})`)
+        $.ui.status(`💬 whisper: the prompt box is not available (/${s.name})`)
       }
     }
 
@@ -311,25 +311,25 @@ export const register: Register = on => {
               />
             ))}
           </Box>
-          <Text dimColor>full: otomatik + yazarken Tab önerisi · lite: sorar · off: kapalı</Text>
+          <Text dimColor>full: invokes skills and suggests while you type · lite: only suggests · off: disabled</Text>
         </Box>
         {sug ? (
           <Box flexDirection="column">
-            <Text bold>Öneri (yazdığın taslağa göre)</Text>
+            <Text bold>Suggestion (from your draft)</Text>
             <Box gap={1}>
               <Button key="suggest" label={`/${sug.name} ekle`} variant="primary" onPress={() => pick(sug)} />
-              <Text dimColor>{sug.reason}{sug.manual ? ' [elle]' : ''}</Text>
+              <Text dimColor>{sug.reason}{sug.manual ? ' [manual]' : ''}</Text>
             </Box>
           </Box>
         ) : null}
-        <Text dimColor>Kısayol: taslağın sonuna ;; yaz, önerilen /skill başa eklenir. Ya da bir skill'e tıkla.</Text>
+        <Text dimColor>Shortcut: end your draft with ;; to put the suggested /skill first. Or click a skill.</Text>
         {visibleGroups.map(g => (
           <Box key={g.title} flexDirection="column">
-            <Text bold>{g.manual ? `${g.title} [elle]` : g.title}</Text>
+            <Text bold>{g.manual ? `${g.title} [manual]` : g.title}</Text>
             {g.skills.map(s => (
               <Box key={s.name} gap={1}>
                 <Button key={`skill-${s.name}`} label={s.name} plain onPress={() => pick(s)} />
-                <Text dimColor>{s.tr}</Text>
+                <Text dimColor>{s.label}</Text>
               </Box>
             ))}
           </Box>

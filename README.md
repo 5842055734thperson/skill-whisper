@@ -25,7 +25,7 @@ In the desktop app, where `/plugin` does not run: click **+** next to the prompt
 
 - **Routing for manual-only skills.** Skills marked `disable-model-invocation: true` (for example the `egm` design skills, `/variant`, `/prototype`) cannot be started by Claude. Without help, Claude does that work itself instead of telling you the skill exists. Skill Whisper lists these skills separately and tells Claude to answer "run `/<name>`" rather than imitate them.
 - **Restores dropped skill descriptions.** When many skills are installed, Claude Code lists some of them by name only. Skill Whisper fills short descriptions back into that list (`prompt.attachment` on `skill_listing`), within a size cap.
-- **Suggestion while you type.** The skill that fits your draft shows in the status line, for example `💬 /dataviz — grafik ve gösterge paneli · sona ;; yaz` ("end with ;;"). It also shows as a button at the top of the `/whisper-ui` pane.
+- **Suggestion while you type.** The skill that fits your draft shows in the status line, for example `💬 /dataviz — charts and dashboards · end with ;;`. It also shows as a button at the top of the `/whisper-ui` pane.
 - **`;;` shortcut.** End your draft with `;;` and the suggested `/skill` is put at the start: `monthly revenue chart ;;` becomes `/dataviz monthly revenue chart`. If no skill fits, the text is left alone. The shortcut is typed text because the desktop app does not pass key combinations to mods.
 - **Draft-safe pane (`/whisper-ui`).** Clicking a skill puts `/skill` in front of what you already typed. It does not erase it.
 - **Levels.** `/whisper full` lets Claude invoke matching skills and shows suggestions. `/whisper lite` only suggests. `/whisper off` turns the mod off. `/whisper-help` lists the skills it knows.
@@ -39,18 +39,18 @@ Everything runs locally. The mod reads `SKILL.md` front matter under your Claude
 ## Limits
 
 - The curated routing table (`hooks/catalog.ts`) was written for the author's set of skills. Skills you do not have are filtered out. Skills it does not list still get the manual-only routing and description restore, but no curated "when to use" line.
-- Help and pane text are partly in Turkish.
+- While-typing matching knows English words and some Turkish words (the author's language).
 - Matching while typing is keyword based, so it can miss or suggest the wrong skill.
 
 ## How it was built
 
 The design, measurements and reviews are in [`docs/process/`](docs/process/), in this order:
 
-1. `concepts_brief.md`: brainstorm brief, in Turkish, with the measured baseline.
+1. `concepts_brief.md`: brainstorm brief, with the measured baseline.
 2. `goldfish_brainstorm_report.md`: six independent reviewers on the first idea.
 3. `test_report.md`: measurements of the old version against a Haiku-ranker prototype.
 4. `goldfish_review_report.md`: review of that report, with how each finding was resolved.
-5. `evaluation_and_plan.md` (Turkish) and `antigravity_review.md`: the next rounds.
+5. `antigravity_review.md` and `evaluation_and_plan.md`: the next rounds.
 
 Headline numbers, 30 prompts, `claude -p`, one run each:
 
@@ -62,7 +62,7 @@ Headline numbers, 30 prompts, `claude -p`, one run each:
 
 These are small samples (n = 1, prompts written by the author). Read the caveats in the reports before relying on them.
 
-[`eval/`](eval/) holds the prompts, the scripts and the scored results. Raw run logs are not included: they contain the author's full session setup. `eval/rank.py` needs a `catalog.json`, which `eval/build_catalog.py` builds from your own install.
+[`eval/`](eval/) holds the prompts, the scripts and the scored results; [`eval/README.md`](eval/README.md) says how to run them against your own install. Raw run logs are not included: they contain the author's full session setup.
 
 ## Development
 
