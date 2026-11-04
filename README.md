@@ -1,4 +1,6 @@
-<h1 align="center">💬 Skill Whisper</h1>
+<h1 align="center">💬</h1> 
+  
+<h1 align="center">skill-whisper</h1> 
 
 <p align="center">Suggests the right installed skill while you type, and makes Claude point you to skills it can't start itself.</p>
 
