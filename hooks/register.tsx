@@ -104,7 +104,7 @@ async function showSuggestion($: EngineInterface, m: SkillMatch | undefined) {
   if (key === shown) return
   shown = key
   await update($, suggestion, () => (m ? { name: m.name, reason: m.reason, manual: m.manual } : null))
-  $.ui.status(m ? `💬 /${m.name}${m.manual ? ' [manual]' : ''} — ${m.reason} · end with ;;` : '💬 whisper: full')
+  $.ui.status(m ? `💬 /${m.name}${m.manual ? ' [manual]' : ''} · ${m.reason} · end with ;;` : '💬 whisper: full')
 }
 
 async function setLevel($: EngineInterface, lv: Level) {
@@ -124,7 +124,7 @@ export const register: Register = on => {
     cmdCache = null
     pendingTab = null
     await $.command.register({ name: 'whisper', description: 'Skill Whisper level: full, lite or off' })
-    await $.command.register({ name: 'whisper-help', description: 'List installed skills with example requests' })
+    await $.command.register({ name: 'whisper-help', description: 'List installed skills by plugin' })
     await $.command.register({ name: 'whisper-ui', description: 'Open the Skill Whisper control center' })
     const saved = await $.store.get('level')
     await setLevel($, isLevel(saved) ? saved : 'full')

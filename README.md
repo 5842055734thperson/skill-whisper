@@ -1,80 +1,139 @@
-# Skill Whisper
+<h1 align="center">💬 Skill Whisper</h1>
 
-A Claude Code mod for people with many skills installed. It does two jobs:
+<p align="center">Suggests the right installed skill while you type, and makes Claude point you to skills it can't start itself.</p>
 
-- It helps Claude pick the skill that fits a task, including skills Claude cannot start by itself.
-- While you type, it suggests the skill that fits your draft and puts `/skill` at the start of your message when you ask.
+<p align="center">
+  <img alt="Version 0.8.0" src="https://img.shields.io/badge/version-0.8.0-blue">
+  <img alt="Claude Code mod" src="https://img.shields.io/badge/Claude%20Code-mod-d97757">
+  <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green">
+</p>
 
-## Install
+Skill Whisper is a Claude Code mod for people with many skills installed. It reads the skills on your machine, suggests the one that fits your draft, and puts `/skill` at the start of your message when you type `;;`. It also tells Claude which skills are manual-only, so Claude says “run `/name`” instead of doing that work itself.
 
-At the prompt of a Claude Code terminal session:
+## Install the mod
 
-```
+Install it from this repository with one command. At the prompt of a Claude Code terminal session, run:
+
+```text
 /plugin install skill-whisper --marketplace 5842055734thperson/skill-whisper
 ```
 
-From a shell:
+From a shell, run:
 
-```
+```bash
 claude plugin install skill-whisper --marketplace 5842055734thperson/skill-whisper
 ```
 
-In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `5842055734thperson/skill-whisper`, then **Add plugin**.
+In the Claude desktop app, where `/plugin` doesn't run, use the plugin menu:
 
-## What it does
+1. Click **+** next to the prompt box, then **Plugins**.
+2. Click **Add marketplace** and enter `5842055734thperson/skill-whisper`.
+3. Click **Add plugin** and pick **skill-whisper**.
 
-- **A skill library built from your install.** At session start the mod reads the `SKILL.md` files of the skills you have installed (name, description, manual-only flag) and builds its list from them. There is no hand-written catalog: install or remove a skill and the list follows (run `/reload-plugins` to refresh it mid-session).
-- **Routing for manual-only skills.** Skills marked `disable-model-invocation: true` (for example the `egm` design skills, `/variant`, `/prototype`) cannot be started by Claude. Without help, Claude does that work itself instead of telling you the skill exists. Skill Whisper lists these skills separately and tells Claude to answer "run `/<name>`" rather than imitate them.
-- **Restores dropped skill descriptions.** When many skills are installed, Claude Code lists some of them by name only. Skill Whisper fills short descriptions back into that list (`prompt.attachment` on `skill_listing`), within a size cap.
-- **Suggestion while you type.** The skill that fits your draft shows in the status line, for example `💬 /dataviz — charts and dashboards · end with ;;`. It also shows as a button at the top of the `/whisper-ui` pane.
-- **`;;` shortcut.** End your draft with `;;` and the suggested `/skill` is put at the start: `monthly revenue chart ;;` becomes `/dataviz monthly revenue chart`. If no skill fits, the text is left alone. The shortcut is typed text because the desktop app does not pass key combinations to mods.
-- **Draft-safe pane (`/whisper-ui`).** Clicking a skill puts `/skill` in front of what you already typed. It does not erase it.
-- **Levels.** `/whisper full` lets Claude invoke matching skills and shows suggestions. `/whisper lite` only suggests. `/whisper off` turns the mod off. `/whisper-help` lists the skills it knows.
+The mod starts at the `full` level. Your status line shows `💬 whisper: full` once it's active.
 
-In a terminal session there is also an inline dim hint and Tab completion. The desktop app does not draw these: we measured that it fires `prompt.edit` but paints no decorations and never fires `prompt.autocomplete`.
+## Commands
+
+All commands start with `/whisper`. The level you pick is saved and kept in later sessions:
+
+| Command | What it does |
+|---|---|
+| `/whisper` | Shows the current level. |
+| `/whisper full` | Claude invokes a matching skill, names manual-only skills, and you get suggestions while you type. |
+| `/whisper lite` | Claude only suggests a skill in one line and asks before using it. No suggestions while you type. |
+| `/whisper off` | Turns the mod off. Nothing is added to Claude's context. |
+| `/whisper-help` | Lists your installed skills, grouped by plugin, with a short description of each. |
+| `/whisper-ui` | Opens the control center pane: level buttons, the current suggestion, and every skill as a button. |
+
+Clicking a skill in the pane puts `/skill` in front of what you already typed. It doesn't erase your draft.
+
+## Typing shortcut
+
+End your draft with `;;` to put the suggested skill at the start of your message. This works at the `full` level:
+
+```text
+monthly revenue chart ;;
+```
+
+becomes:
+
+```text
+/dataviz monthly revenue chart
+```
+
+While you type, the status line shows the current suggestion, for example `💬 /dataviz · charts and dashboards · end with ;;`. Manual-only skills are tagged `[manual]`. If no skill fits, `;;` leaves your text alone.
+
+The shortcut is typed text because the Claude desktop app doesn't pass key combinations to mods. In a terminal session you also get a dim inline hint and Tab completion.
+
+## How the skill library is built
+
+The mod builds its list from what's installed, so it works with your own skills and needs no setup. At session start it:
+
+1. Reads every `SKILL.md` under `~/.claude/skills`, `~/.claude/plugins/cache` and `~/.claude/plugins/synced`.
+2. Takes each skill's name, description, and `disable-model-invocation` flag (the manual-only flag).
+3. Keeps only skills that appear in Claude Code's list of installed commands, and groups them by plugin.
+
+Install or remove a skill, then run `/reload-plugins` to refresh the list in the current session.
+
+The same list feeds two changes to what Claude sees:
+
+- **Manual-only list**: added to Claude's context, with the rule “tell the user to run `/name`; don’t do its work yourself”
+- **Restored descriptions**: when Claude Code shortens its skill list and drops descriptions, the mod puts short descriptions back, within a size cap
+
+## Add your own match words
+
+Suggestions while you type match your words against skill names and descriptions, so English works best. To add words for a skill, edit [`hooks/aliases.ts`](hooks/aliases.ts):
+
+```typescript
+export const ALIASES = {
+  "dataviz": ["chart", "dashboard", "grafik"],
+}
+```
+
+An entry is used only when that skill is installed. The file ships with English and Turkish words from the author.
 
 ## Privacy
 
-Everything runs locally. The mod reads `SKILL.md` front matter under your Claude config folder (`~/.claude/skills`, `~/.claude/plugins/cache`, `~/.claude/plugins/synced`) to learn skill names, descriptions and the manual-only flag. It calls no model and sends nothing anywhere.
+Everything runs on your machine. The mod reads `SKILL.md` front matter in your Claude config folder. It calls no model, and it sends nothing over the network.
 
-## Limits
+## Measured results
 
-- Built-in Claude Code skills that have no `SKILL.md` on disk (for example `loop`, `schedule`) are not suggested while typing. Claude still sees them in its own skill list.
-- Matching while typing uses each skill's name and description, so it works best with English words. [`hooks/aliases.ts`](hooks/aliases.ts) adds optional extra words per skill (English and Turkish from the author); add your own there.
-- Matching while typing is keyword based, so it can miss or suggest the wrong skill.
+Each setup ran the same 20 prompts with `claude -p`, Opus 5.5, and at most 2 turns. Of those, 16 need a skill that Claude can start, and 4 need a manual-only skill:
 
-## How it was built
+| Setup | Skill invoked (of 16) | Manual skill named (of 4) |
+|---|---|---|
+| No mod | 8 | 0 |
+| v0.3, hand-written routing table | 15 | 0 |
+| v0.8, library built from installed skills | 15 | 3 |
 
-The design, measurements and reviews are in [`docs/process/`](docs/process/), in this order:
+In v0.8, the one auto miss (a slide deck) went to the host's Artifact tool, and the one manual miss (a design doc) went to the `docs` skill instead of `/egm:egm-draft`.
 
-1. `concepts_brief.md`: brainstorm brief, with the measured baseline.
-2. `goldfish_brainstorm_report.md`: six independent reviewers on the first idea.
-3. `test_report.md`: measurements of the old version against a Haiku-ranker prototype.
-4. `goldfish_review_report.md`: review of that report, with how each finding was resolved.
-5. `antigravity_review.md` and `evaluation_and_plan.md`: the next rounds.
+Each setup ran once, on prompts the author wrote. The [process documents](docs/process/README.md) list the caveats. To run the measurements on your own install, see [`eval/README.md`](eval/README.md).
 
-Headline numbers, 30 prompts, `claude -p`, one run each:
+## Known limits
 
-| Setup | Model-invocable skills (16) | Manual-only skills (4) | Quiet on no-skill prompts (10) |
-|---|---|---|---|
-| No mod | 8 | 0 | 10 |
-| Old routing table | 15 | 0 | 10 |
-| Table with a manual-only section (6 of the 30 cases re-run, Sonnet) | — | 4 | — |
-| **v0.8: library built from installed skills** (20 skill prompts, Opus) | **15** | **3** | not re-run |
+These gaps are known and not fixed yet:
 
-In v0.8 the one auto miss (a slide deck) went to the host's Artifact tool, and the one manual miss (a design doc) went to the `docs` skill instead of `/egm:egm-draft`.
+- Claude Code's built-in skills that have no `SKILL.md` file (for example `loop` and `schedule`) aren't suggested while you type. Claude still sees them in its own skill list.
+- Matching while you type uses keywords, so it can miss a skill or suggest the wrong one.
+- The false-alarm rate on prompts that need no skill wasn't re-measured for v0.8.
+- Tested with Claude Code 2.1.316 on Windows.
 
-These are small samples (n = 1, prompts written by the author). Read the caveats in the reports before relying on them.
+## Develop and test
 
-[`eval/`](eval/) holds the prompts, the scripts and the scored results; [`eval/README.md`](eval/README.md) says how to run them against your own install. Raw run logs are not included: they contain the author's full session setup.
+Clone the repository and run the checks from its root. The tests use a fake skill install, so they don't depend on your machine:
 
-## Development
-
-```
+```bash
 claude plugin validate .
 claude plugin test .
 ```
 
+To load your working copy into a session instead of the installed version, start Claude Code with `claude --plugin-dir .`.
+
+## Project history
+
+The design, measurements and reviews behind each version are in [`docs/process/`](docs/process/README.md). The mod was called skill-pilot until v0.6.
+
 ## License
 
-MIT
+[MIT](LICENSE)
