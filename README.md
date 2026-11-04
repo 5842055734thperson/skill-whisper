@@ -6,6 +6,7 @@
   <img alt="Version 0.8.0" src="https://img.shields.io/badge/version-0.8.0-blue">
   <img alt="Claude Code mod" src="https://img.shields.io/badge/Claude%20Code-mod-d97757">
   <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green">
+  <a href="https://www.buymeacoffee.com/5842055734thperson"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black"></a>
 </p>
 
 Skill Whisper is a Claude Code mod for people with many skills installed. It reads the skills on your machine, suggests the one that fits your draft, and puts `/skill` at the start of your message when you type `;;`. It also tells Claude which skills are manual-only, so Claude says “run `/name`” instead of doing that work itself.
@@ -49,7 +50,7 @@ Clicking a skill in the pane puts `/skill` in front of what you already typed. I
 
 ## Typing shortcut
 
-End your draft with `;;` to put the suggested skill at the start of your message. This works at the `full` level:
+End your draft with `;;` to put the suggested skill at the start of your message. This works at the `full` level. With a chart skill such as `dataviz` installed:
 
 ```text
 monthly revenue chart ;;
@@ -61,7 +62,7 @@ becomes:
 /dataviz monthly revenue chart
 ```
 
-While you type, the status line shows the current suggestion, for example `💬 /dataviz · charts and dashboards · end with ;;`. Manual-only skills are tagged `[manual]`. If no skill fits, `;;` leaves your text alone.
+While you type, the status line shows the current suggestion, for example `💬 /dataviz · charts and dashboards · end with ;;`. The skill names you see depend on what you have installed. Manual-only skills are tagged `[manual]`. If no skill fits, `;;` leaves your text alone.
 
 The shortcut is typed text because the Claude desktop app doesn't pass key combinations to mods. In a terminal session you also get a dim inline hint and Tab completion.
 
@@ -133,6 +134,10 @@ To load your working copy into a session instead of the installed version, start
 ## Project history
 
 The design, measurements and reviews behind each version are in [`docs/process/`](docs/process/README.md). The mod was called skill-pilot until v0.6.
+
+## Support the project
+
+Skill Whisper is free and MIT-licensed. If it saves you time, you can [buy me a coffee](https://www.buymeacoffee.com/5842055734thperson). Bug reports and pull requests help too.
 
 ## License
 
