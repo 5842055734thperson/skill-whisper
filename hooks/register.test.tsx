@@ -5,6 +5,7 @@ const FIXTURE: { name: string; description: string; manual?: true }[] = [
   { name: 'dataviz', description: 'Create charts, graphs, dashboards and data visualizations.' },
   { name: 'hallmark', description: 'Design websites and new pages that look designed.' },
   { name: 'ask-sonner', description: 'Guide to Sonner, the React toast library: toasts behind a modal, dark mode.' },
+  { name: 'seo', description: 'Comprehensive SEO analysis for any website or business type.' },
   { name: 'egm-draft', description: 'Drafts a formal design document or spec section by section.', manual: true },
   { name: 'egm-brainstorm', description: 'Interactive ideation and brainstorming for software ideas.', manual: true },
   { name: 'review-animations', description: 'Reviews animation and motion code against a high craft bar.', manual: true },
@@ -531,5 +532,27 @@ describe('skill-whisper mod', () => {
     expect(out.text).toBe('/dataviz aylık gelir grafiği çiz')
     const plain = await $.prompt.edit({ origin: { kind: 'composer' }, text: 'merhaba ', cursor: 8, start: 8, end: 8, inputText: ';;' } as any)
     expect(plain.text).toBe('merhaba ;;')
+  })
+
+  test('a 3-letter skill name like seo matches a Turkish draft', async ($, on) => {
+    mock.store(on, { level: 'full' })
+    mockSkills(on)
+    on('command.register', () => ({ value: undefined }))
+    on('ui.open', () => ({ value: { isPlaced: true } }))
+    const statuses: (string | undefined)[] = []
+    on('ui.status', (_$, e) => {
+      statuses.push((e as { text?: string }).text)
+      return { value: undefined }
+    })
+    on('session.start', (_$, e) => e)
+    on('command.list', () => ({ value: [{ name: 'claude-seo:seo', description: 'SEO', source: 'plugin' }] }))
+    on('prompt.edit', (_$, e) => ({
+      text: e.text.slice(0, e.start) + e.inputText + e.text.slice(e.end),
+      cursor: e.start + e.inputText.length,
+    }))
+    await $.session.start({ reason: 'startup', cwd: '/work' } as any)
+    await $.command.run({ command: 'whisper-help', args: '' })
+    await $.prompt.edit({ origin: { kind: 'composer' }, text: 'bu sitenin seo analizini ', cursor: 25, start: 25, end: 25, inputText: 'yap' } as any)
+    expect(statuses.some(x => typeof x === 'string' && x.includes('/claude-seo:seo'))).toBe(true)
   })
 })

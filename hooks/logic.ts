@@ -254,15 +254,9 @@ export function matchSkillsForDraft(
   if (draftWords.length === 0) return []
 
   const results = new Map<string, SkillMatch>()
-  const catalogNames = new Set<string>()
 
   for (const g of visibleGroups) {
     for (const s of g.skills) {
-      // Skills without aliases are matched below from their description instead.
-      if (s.triggers?.length) {
-        catalogNames.add(s.name)
-        catalogNames.add(shortName(s.name))
-      }
       let score = 0
 
       // Exact mention of distinctive skill shortName (e.g. "dataviz", "hallmark", "teardown", "humanizer")
@@ -308,7 +302,7 @@ export function matchSkillsForDraft(
 
   for (const cmd of dynamicCandidates) {
     if (BUILTIN_SKIP.has(cmd.name)) continue
-    if (catalogNames.has(cmd.name) || catalogNames.has(shortName(cmd.name))) continue
+    // Skills already matched by their aliases also get name and description points added below.
 
     const disk = diskSkills.get(cmd.name) ?? diskSkills.get(shortName(cmd.name))
     const desc = disk?.description || cmd.description || ''
@@ -316,7 +310,7 @@ export function matchSkillsForDraft(
 
     const nameParts = foldTr(shortName(cmd.name))
       .split(/[-_.:]+/)
-      .filter(p => p.length >= 4 && !GENERIC_SKILL_WORDS.has(p))
+      .filter(p => (p.length >= 4 || SHORT_EXACT_STEMS.has(p)) && !GENERIC_SKILL_WORDS.has(p)) // 3-letter acronyms like seo, pdf count
 
     // Name parts match whole words only ("extra" must not match "extract", "brain" not "brainstorm").
     for (const part of nameParts) {
@@ -336,7 +330,10 @@ export function matchSkillsForDraft(
       score += Math.min(descHits * 4, 8)
     }
 
-    if (score >= 8) {
+    const prev = results.get(cmd.name) ?? results.get(shortName(cmd.name))
+    if (prev) {
+      results.set(prev.name, { ...prev, score: prev.score + score })
+    } else if (score >= 8) {
       results.set(cmd.name, {
         name: cmd.name,
         reason: trimDesc(desc || cmd.name, 52),

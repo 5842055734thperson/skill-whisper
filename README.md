@@ -5,7 +5,7 @@
 <p align="center">Suggests the right installed skill while you type, and makes Claude point you to skills it can't start itself.</p>
 
 <p align="center">
-  <img alt="Version 0.8.0" src="https://img.shields.io/badge/version-0.8.0-blue">
+  <img alt="Version 0.8.1" src="https://img.shields.io/badge/version-0.8.1-blue">
   <img alt="Claude Code mod" src="https://img.shields.io/badge/Claude%20Code-mod-d97757">
   <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green">
   <a href="https://www.buymeacoffee.com/5842055734thperson"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black"></a>
