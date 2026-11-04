@@ -1,0 +1,66 @@
+[
+  {
+    "id": 101,
+    "note": "out-of-CATALOG auto skill",
+    "expect": [
+      "ask-sonner"
+    ],
+    "invoked": [
+      "ask-sonner"
+    ],
+    "verdict": "AUTO_INVOKED",
+    "pass": true,
+    "turns": 3,
+    "terminalReason": "completed",
+    "cost": 0.1302,
+    "skillPilotLoaded": true,
+    "preview": "🧭 Skill: ask-sonner — Sonner toasts behind a modal and ignoring dark mode/Tailwind\nBoth symptoms come from known causes. Here are the checks, in the order I'd run them.\n\n## 1. Dar"
+  },
+  {
+    "id": 102,
+    "note": "out-of-CATALOG auto skill",
+    "expect": [
+      "write-swift"
+    ],
+    "invoked": [
+      "write-swift"
+    ],
+    "verdict": "AUTO_INVOKED",
+    "pass": true,
+    "turns": 3,
+    "terminalReason": "completed",
+    "cost": 0.1365,
+    "skillPilotLoaded": true,
+    "preview": "🧭 Skill: write-swift — Swift 6 concurrency migration\nThere's no class in the working directory, so here is the pattern on a representative example. If you paste your actual class,"
+  },
+  {
+    "id": 106,
+    "note": "previously missing manual skill",
+    "expect": [
+      "pick-ui-library"
+    ],
+    "invoked": [],
+    "verdict": "MANUAL_RECOMMENDED",
+    "pass": true,
+    "turns": 1,
+    "terminalReason": "completed",
+    "cost": 0.0588,
+    "skillPilotLoaded": true,
+    "preview": "🧭 Skill: `/pick-ui-library`. It picks a library for a frontend task from a curated, opinionated list, and command menus and virtualization are both on it. I can't invoke it myself"
+  },
+  {
+    "id": 18,
+    "note": "real mod hook + English reply check vs Artifact",
+    "expect": [
+      "egm:egm-draft"
+    ],
+    "invoked": [],
+    "verdict": "MANUAL_RECOMMENDED",
+    "pass": true,
+    "turns": 1,
+    "terminalReason": "completed",
+    "cost": 0.0577,
+    "skillPilotLoaded": true,
+    "preview": "🧭 Skill: `/egm:egm-draft`. It drafts formal design docs and specs, so it fits this request.\n\nI can't invoke it myself, so please run `/egm:egm-draft` and give it the rate-limiting"
+  }
+]

@@ -1,0 +1,326 @@
+{
+ "tally": {
+  "NO_SKILL": 12,
+  "INVOKED": 8,
+  "PASS": 10
+ },
+ "rows": [
+  {
+   "id": 1,
+   "manual": false,
+   "expect": [
+    "diagram-design"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 2,
+   "manual": false,
+   "expect": [
+    "dataviz"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 3,
+   "manual": false,
+   "expect": [
+    "teardown"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "teardown"
+   ],
+   "all_skill_calls": [
+    "teardown"
+   ]
+  },
+  {
+   "id": 4,
+   "manual": false,
+   "expect": [
+    "hallmark",
+    "frontend-design:frontend-design"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 5,
+   "manual": false,
+   "expect": [
+    "better-accessibility"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 6,
+   "manual": false,
+   "expect": [
+    "better-colors"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "better-colors"
+   ],
+   "all_skill_calls": [
+    "better-colors"
+   ]
+  },
+  {
+   "id": 7,
+   "manual": false,
+   "expect": [
+    "animate"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 8,
+   "manual": false,
+   "expect": [
+    "remove-animations"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "remove-animations"
+   ],
+   "all_skill_calls": [
+    "remove-animations"
+   ]
+  },
+  {
+   "id": 9,
+   "manual": false,
+   "expect": [
+    "anthropic-skills:humanizer"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 10,
+   "manual": false,
+   "expect": [
+    "anthropic-skills:learn",
+    "learning-framework:learn"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 11,
+   "manual": false,
+   "expect": [
+    "claude-seo:seo-audit",
+    "claude-seo:seo"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "claude-seo:seo-audit"
+   ],
+   "all_skill_calls": [
+    "claude-seo:seo-audit"
+   ]
+  },
+  {
+   "id": 12,
+   "manual": false,
+   "expect": [
+    "deploy-to-vercel",
+    "vercel-cli-with-tokens"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "deploy-to-vercel"
+   ],
+   "all_skill_calls": [
+    "deploy-to-vercel"
+   ]
+  },
+  {
+   "id": 13,
+   "manual": false,
+   "expect": [
+    "ui-ux-pro-max:slides",
+    "anthropic-skills:pptx"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 14,
+   "manual": false,
+   "expect": [
+    "anthropic-skills:docx"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "anthropic-skills:docx"
+   ],
+   "all_skill_calls": [
+    "anthropic-skills:docx"
+   ]
+  },
+  {
+   "id": 15,
+   "manual": false,
+   "expect": [
+    "break-ui"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "break-ui"
+   ],
+   "all_skill_calls": [
+    "break-ui"
+   ]
+  },
+  {
+   "id": 16,
+   "manual": false,
+   "expect": [
+    "mobile-native"
+   ],
+   "verdict": "INVOKED",
+   "detail": [
+    "mobile-native"
+   ],
+   "all_skill_calls": [
+    "mobile-native"
+   ]
+  },
+  {
+   "id": 17,
+   "manual": true,
+   "expect": [
+    "egm:egm-brainstorm"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 18,
+   "manual": true,
+   "expect": [
+    "egm:egm-draft"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 19,
+   "manual": true,
+   "expect": [
+    "egm:egm-review"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 20,
+   "manual": true,
+   "expect": [
+    "variant"
+   ],
+   "verdict": "NO_SKILL",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 21,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 22,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 23,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 24,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 25,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 26,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 27,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 28,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 29,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  },
+  {
+   "id": 30,
+   "manual": false,
+   "expect": [],
+   "verdict": "PASS",
+   "detail": [],
+   "all_skill_calls": []
+  }
+ ]
+}

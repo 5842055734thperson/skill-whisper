@@ -1,0 +1,10 @@
+{"id": 101, "prompt": "My Sonner toasts render behind my Radix dialog and ignore dark mode Tailwind classes. Help me troubleshoot.", "expect": ["ask-sonner"], "note": "out-of-CATALOG auto skill"}
+{"id": 102, "prompt": "Migrate a Swift 5 class with DispatchQueue callbacks to Swift 6 strict concurrency using actors and @MainActor.", "expect": ["write-swift"], "note": "out-of-CATALOG auto skill"}
+{"id": 103, "prompt": "Extract the tables from report.pdf and merge pages 1-4 into summary.pdf.", "expect": ["anthropic-skills:pdf"], "note": "host-truncated description skill"}
+{"id": 104, "prompt": "Clean messy date columns and add SUMIFS formulas to sales.xlsx.", "expect": ["anthropic-skills:xlsx"], "note": "out-of-v0.3-table auto skill"}
+{"id": 105, "prompt": "Decompile this packaged Electron app's asar bundle and explain how its IPC bridge works.", "expect": ["reverse-engineer-anything"], "note": "out-of-CATALOG auto skill"}
+{"id": 106, "prompt": "Which React library should I pick for accessible command menus and virtualized 50k-row tables?", "expect": ["pick-ui-library"], "manual": true, "note": "previously missing manual skill"}
+{"id": 107, "prompt": "Build three genuinely different interactive versions of our onboarding card behind a live picker so I can flip through them.", "expect": ["prototype"], "manual": true, "note": "previously missing manual skill"}
+{"id": 108, "prompt": "Check all design documents and READMEs in this repo for drift against the current implementation.", "expect": ["egm:egm-drift-report"], "manual": true, "note": "out-of-v0.3-table manual skill"}
+{"id": 109, "prompt": "/etc/hosts changed after a VPN update; what lines typically live in that file?", "expect": [], "note": "near-miss leading slash path, no skill"}
+{"id": 110, "prompt": "What does CSS `isolation: isolate` do in two sentences?", "expect": [], "note": "near-miss CSS question next to UI skills, no skill"}

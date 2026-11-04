@@ -1,0 +1,63 @@
+[
+  {
+    "id": 13,
+    "expect": [
+      "ui-ux-pro-max:slides",
+      "anthropic-skills:pptx"
+    ],
+    "invoked": [
+      "anthropic-skills:pptx"
+    ],
+    "verdict": "AUTO_INVOKED",
+    "pass": true,
+    "preview": "🧭 Skill: anthropic-skills:pptx — you asked for a 5-slide deck, and this skill produces a PowerPoint file.\nI can't create the .pptx file in this session. The sk"
+  },
+  {
+    "id": 17,
+    "expect": [
+      "egm:egm-brainstorm"
+    ],
+    "invoked": [],
+    "verdict": "MANUAL_RECOMMENDED",
+    "pass": true,
+    "preview": "🧭 Öneri: Bu görev için lütfen /egm:egm-brainstorm komutunu çalıştırın.\n\nBrainstorming and stress-testing before a spec is what that command is for, so I won't "
+  },
+  {
+    "id": 18,
+    "expect": [
+      "egm:egm-draft"
+    ],
+    "invoked": [],
+    "verdict": "MANUAL_RECOMMENDED",
+    "pass": true,
+    "preview": "🧭 Öneri: Bu görev için lütfen /egm:egm-draft komutunu çalıştırın.\n\nTasarım dokümanı taslağı hazırlamak o skill'in işi. Ben o iş akışını kendim yürütmüyorum. Ko"
+  },
+  {
+    "id": 19,
+    "expect": [
+      "egm:egm-review"
+    ],
+    "invoked": [],
+    "verdict": "MANUAL_RECOMMENDED",
+    "pass": true,
+    "preview": "🧭 Öneri: Bu görev için lütfen /egm:egm-review komutunu çalıştırın.\n\nBu skill'i ben çağıramıyorum, o yüzden incelemeyi kendim yürütmüyorum. Komutu `docs/designs"
+  },
+  {
+    "id": 20,
+    "expect": [
+      "variant"
+    ],
+    "invoked": [],
+    "verdict": "MANUAL_RECOMMENDED",
+    "pass": true,
+    "preview": "🧭 Öneri: Bu görev için lütfen /variant komutunu çalıştırın.\n\nVaryant üretimi manuel bir skill olduğu için onu ben çalıştıramıyorum.\n\nÇalışma dizini boş, yani b"
+  },
+  {
+    "id": 31,
+    "expect": [],
+    "invoked": [],
+    "verdict": "QUIET_PASS",
+    "pass": true,
+    "preview": "`isolation: isolate` creates a new stacking context on the element without needing `z-index`, `position`, `opacity`, or other properties that would normally tri"
+  }
+]

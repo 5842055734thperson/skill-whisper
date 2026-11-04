@@ -1,0 +1,5 @@
+{
+  "name": "skill-whisper",
+  "owner": { "name": "5842055734thperson" },
+  "plugins": [{ "name": "skill-whisper", "source": "./", "description": "Suggests the installed skill that fits what you type and routes manual-only skills to /commands." }]
+}

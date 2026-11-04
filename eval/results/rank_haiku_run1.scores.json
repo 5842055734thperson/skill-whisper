@@ -1,0 +1,368 @@
+[
+ {
+  "id": 1,
+  "expect": [
+   "diagram-design"
+  ],
+  "shown": [
+   {
+    "skill": "diagram-design",
+    "confidence": 0.95,
+    "reason": "Built for flowcharts; matches the signup, verify, profile, abandon flow."
+   }
+  ],
+  "secs": 8.4,
+  "cost": 0.0026999000000000003
+ },
+ {
+  "id": 2,
+  "expect": [
+   "dataviz"
+  ],
+  "shown": [
+   {
+    "skill": "dataviz",
+    "confidence": 0.9,
+    "reason": "User wants a chart of revenue data; dataviz covers chart creation."
+   }
+  ],
+  "secs": 9.9,
+  "cost": 0.0026714000000000004
+ },
+ {
+  "id": 3,
+  "expect": [
+   "teardown"
+  ],
+  "shown": [
+   {
+    "skill": "teardown",
+    "confidence": 0.95,
+    "reason": "Built for technical cutaways of how things work, including display layers"
+   }
+  ],
+  "secs": 9.1,
+  "cost": 0.0027939
+ },
+ {
+  "id": 4,
+  "expect": [
+   "hallmark",
+   "frontend-design:frontend-design"
+  ],
+  "shown": [
+   {
+    "skill": "frontend-design:frontend-design",
+    "confidence": 0.85,
+    "reason": "Builds distinctive, non-templated landing page visual design from scratch"
+   },
+   {
+    "skill": "hallmark",
+    "confidence": 0.6,
+    "reason": "Designs new websites and pages that look designed, not generated"
+   }
+  ],
+  "secs": 10.4,
+  "cost": 0.0027146
+ },
+ {
+  "id": 5,
+  "expect": [
+   "better-accessibility"
+  ],
+  "shown": [
+   {
+    "skill": "better-accessibility",
+    "confidence": 0.95,
+    "reason": "Reviews form labels, keyboard focus and ARIA for accessibility issues"
+   }
+  ],
+  "secs": 8.7,
+  "cost": 0.0026988000000000003
+ },
+ {
+  "id": 6,
+  "expect": [
+   "better-colors"
+  ],
+  "shown": [
+   {
+    "skill": "better-colors",
+    "confidence": 0.95,
+    "reason": "Builds color systems, semantic tokens, and measures contrast, matching the request exactly."
+   }
+  ],
+  "secs": 7.2,
+  "cost": 0.0026726000000000002
+ },
+ {
+  "id": 7,
+  "expect": [
+   "animate"
+  ],
+  "shown": [
+   {
+    "skill": "animate",
+    "confidence": 0.9,
+    "reason": "Builds a new animation from scratch, covering timing, curve, and properties."
+   }
+  ],
+  "secs": 11.8,
+  "cost": 0.0027844000000000002
+ },
+ {
+  "id": 8,
+  "expect": [
+   "remove-animations"
+  ],
+  "shown": [
+   {
+    "skill": "remove-animations",
+    "confidence": 0.9,
+    "reason": "Built to find and remove unneeded motion, edits code by subtraction only."
+   }
+  ],
+  "secs": 8.8,
+  "cost": 0.0027169000000000004
+ },
+ {
+  "id": 9,
+  "expect": [
+   "anthropic-skills:humanizer"
+  ],
+  "shown": [],
+  "secs": 7.4,
+  "cost": 0.0026479
+ },
+ {
+  "id": 10,
+  "expect": [
+   "anthropic-skills:learn",
+   "learning-framework:learn"
+  ],
+  "shown": [],
+  "secs": 8.8,
+  "cost": 0.0026411
+ },
+ {
+  "id": 11,
+  "expect": [
+   "claude-seo:seo-audit",
+   "claude-seo:seo"
+  ],
+  "shown": [
+   {
+    "skill": "claude-seo:seo-audit",
+    "confidence": 0.97,
+    "reason": "Full-site SEO audit is exactly this skill's purpose."
+   },
+   {
+    "skill": "claude-seo:seo",
+    "confidence": 0.6,
+    "reason": "Comprehensive SEO analysis covering full site audits."
+   }
+  ],
+  "secs": 8.1,
+  "cost": 0.0026928000000000004
+ },
+ {
+  "id": 12,
+  "expect": [
+   "deploy-to-vercel",
+   "vercel-cli-with-tokens"
+  ],
+  "shown": [
+   {
+    "skill": "deploy-to-vercel",
+    "confidence": 0.95,
+    "reason": "Directly matches deploying an app to Vercel"
+   }
+  ],
+  "secs": 8.6,
+  "cost": 0.0026909
+ },
+ {
+  "id": 13,
+  "expect": [
+   "ui-ux-pro-max:slides",
+   "anthropic-skills:pptx"
+  ],
+  "shown": [
+   {
+    "skill": "anthropic-skills:pptx",
+    "confidence": 0.9,
+    "reason": "Creating a slide deck is the core purpose of the pptx skill."
+   }
+  ],
+  "secs": 8.7,
+  "cost": 0.0027207000000000004
+ },
+ {
+  "id": 14,
+  "expect": [
+   "anthropic-skills:docx"
+  ],
+  "shown": [
+   {
+    "skill": "anthropic-skills:docx",
+    "confidence": 0.95,
+    "reason": "User explicitly requests a Word document (.docx) output"
+   }
+  ],
+  "secs": 12.1,
+  "cost": 0.0027907
+ },
+ {
+  "id": 15,
+  "expect": [
+   "break-ui"
+  ],
+  "shown": [
+   {
+    "skill": "break-ui",
+    "confidence": 0.95,
+    "reason": "Stress-tests UI with worst-case data like long names and missing fields"
+   }
+  ],
+  "secs": 12.1,
+  "cost": 0.0027646000000000003
+ },
+ {
+  "id": 16,
+  "expect": [
+   "mobile-native"
+  ],
+  "shown": [
+   {
+    "skill": "mobile-native",
+    "confidence": 0.97,
+    "reason": "Covers exactly the 100vh bug and tap highlight flash for web apps"
+   }
+  ],
+  "secs": 7.4,
+  "cost": 0.0026702
+ },
+ {
+  "id": 17,
+  "expect": [
+   "egm:egm-brainstorm"
+  ],
+  "shown": [],
+  "secs": 7.7,
+  "cost": 0.0026449
+ },
+ {
+  "id": 18,
+  "expect": [
+   "egm:egm-draft"
+  ],
+  "shown": [
+   {
+    "skill": "anthropic-skills:docs",
+    "confidence": 0.9,
+    "reason": "Formal design doc is a shareable document; docs is the default for documents"
+   },
+   {
+    "skill": "egm:egm-draft",
+    "confidence": 0.6,
+    "reason": "Drafts design documents section-by-section, matching a formal design doc request"
+   }
+  ],
+  "secs": 10.3,
+  "cost": 0.0026958
+ },
+ {
+  "id": 19,
+  "expect": [
+   "egm:egm-review"
+  ],
+  "shown": [
+   {
+    "skill": "egm:egm-review",
+    "confidence": 0.9,
+    "reason": "Runs the Goldfish Review Protocol with fresh-context reviewers on design docs"
+   }
+  ],
+  "secs": 7.3,
+  "cost": 0.0028733
+ },
+ {
+  "id": 20,
+  "expect": [
+   "variant"
+  ],
+  "shown": [],
+  "secs": 5.2,
+  "cost": 0.0026901000000000004
+ },
+ {
+  "id": 21,
+  "expect": [],
+  "shown": [],
+  "secs": 6.3,
+  "cost": 0.0026389
+ },
+ {
+  "id": 22,
+  "expect": [],
+  "shown": [],
+  "secs": 6.5,
+  "cost": 0.0026399
+ },
+ {
+  "id": 23,
+  "expect": [],
+  "shown": [],
+  "secs": 6.6,
+  "cost": 0.0026385000000000002
+ },
+ {
+  "id": 24,
+  "expect": [],
+  "shown": [],
+  "secs": 5.3,
+  "cost": 0.0026381
+ },
+ {
+  "id": 25,
+  "expect": [],
+  "shown": [],
+  "secs": 7.7,
+  "cost": 0.0026381
+ },
+ {
+  "id": 26,
+  "expect": [],
+  "shown": [],
+  "secs": 8.2,
+  "cost": 0.0026389
+ },
+ {
+  "id": 27,
+  "expect": [],
+  "shown": [],
+  "secs": 8.0,
+  "cost": 0.0026391
+ },
+ {
+  "id": 28,
+  "expect": [],
+  "shown": [],
+  "secs": 7.4,
+  "cost": 0.0026381
+ },
+ {
+  "id": 29,
+  "expect": [],
+  "shown": [],
+  "secs": 9.5,
+  "cost": 0.0026401
+ },
+ {
+  "id": 30,
+  "expect": [],
+  "shown": [],
+  "secs": 7.3,
+  "cost": 0.0026397
+ }
+]

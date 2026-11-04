@@ -1,0 +1,30 @@
+{"id": 1, "prompt": "Turn this into a flowchart: user signs up, verifies email, completes profile, or abandons at any step.", "expect": ["diagram-design"]}
+{"id": 2, "prompt": "I have monthly revenue numbers: Jan 12k, Feb 15k, Mar 11k, Apr 19k. Make a chart of them.", "expect": ["dataviz"]}
+{"id": 3, "prompt": "Draw a technical cutaway illustration of the layers inside an OLED display.", "expect": ["teardown"]}
+{"id": 4, "prompt": "Build me a landing page for a small pottery studio.", "expect": ["hallmark", "frontend-design:frontend-design"]}
+{"id": 5, "prompt": "Is this sign-up form accessible? <form><input placeholder='Email'><div onclick='submit()'>Go</div></form>", "expect": ["better-accessibility"]}
+{"id": 6, "prompt": "My two brand colors are #3B82F6 and #F59E0B. Generate a full palette with semantic tokens and check the contrast.", "expect": ["better-colors"]}
+{"id": 7, "prompt": "Add an entrance animation to my modal dialog component.", "expect": ["animate"]}
+{"id": 8, "prompt": "My app feels slow and over-animated. What motion should I remove?", "expect": ["remove-animations"]}
+{"id": 9, "prompt": "Rewrite this so it doesn't sound like ChatGPT wrote it: 'In today's fast-paced world, it's not just about speed - it's about delivering seamless value.'", "expect": ["anthropic-skills:humanizer"]}
+{"id": 10, "prompt": "Teach me how Bloom filters work, step by step, so I actually remember it.", "expect": ["anthropic-skills:learn", "learning-framework:learn"]}
+{"id": 11, "prompt": "Do a full SEO audit of https://example.com.", "expect": ["claude-seo:seo-audit", "claude-seo:seo"]}
+{"id": 12, "prompt": "Deploy my Next.js app to Vercel.", "expect": ["deploy-to-vercel", "vercel-cli-with-tokens"]}
+{"id": 13, "prompt": "Make a 5-slide deck summarizing Q3 results: revenue up 12%, churn down 2 points, two new markets.", "expect": ["ui-ux-pro-max:slides", "anthropic-skills:pptx"]}
+{"id": 14, "prompt": "Write a cover letter as a Word document for a junior data analyst role.", "expect": ["anthropic-skills:docx"]}
+{"id": 15, "prompt": "Stress-test my user card component with worst-case data like very long names and missing avatars.", "expect": ["break-ui"]}
+{"id": 16, "prompt": "Make my web app feel native on iPhone - the 100vh bug and the tap highlight flash are annoying.", "expect": ["mobile-native"]}
+{"id": 17, "prompt": "I have an idea for a CLI that syncs dotfiles across machines. Brainstorm and stress-test it with me before we write a spec.", "expect": ["egm:egm-brainstorm"], "manual": true}
+{"id": 18, "prompt": "Write a formal design doc for adding rate limiting to our public API.", "expect": ["egm:egm-draft"], "manual": true}
+{"id": 19, "prompt": "Review my design doc docs/designs/cache.md with independent fresh-context reviewers.", "expect": ["egm:egm-review"], "manual": true}
+{"id": 20, "prompt": "Give me three alternative design variants of my pricing card.", "expect": ["variant"], "manual": true}
+{"id": 21, "prompt": "What's the difference between let and const in JavaScript?", "expect": []}
+{"id": 22, "prompt": "Convert 72 Fahrenheit to Celsius.", "expect": []}
+{"id": 23, "prompt": "How is 'recieve' spelled correctly?", "expect": []}
+{"id": 24, "prompt": "Write a Python function that reverses a string.", "expect": []}
+{"id": 25, "prompt": "What does HTTP status 418 mean?", "expect": []}
+{"id": 26, "prompt": "Explain what git rebase does in two sentences.", "expect": []}
+{"id": 27, "prompt": "Give me a regex that matches a US ZIP code.", "expect": []}
+{"id": 28, "prompt": "What's the time complexity of binary search?", "expect": []}
+{"id": 29, "prompt": "Rename variable x to count in this snippet: let x = 0; x++;", "expect": []}
+{"id": 30, "prompt": "Summarize the plot of Hamlet in three sentences.", "expect": []}
