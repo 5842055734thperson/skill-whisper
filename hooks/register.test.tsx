@@ -555,4 +555,33 @@ describe('skill-whisper mod', () => {
     await $.prompt.edit({ origin: { kind: 'composer' }, text: 'bu sitenin seo analizini ', cursor: 25, start: 25, end: 25, inputText: 'yap' } as any)
     expect(statuses.some(x => typeof x === 'string' && x.includes('/claude-seo:seo'))).toBe(true)
   })
+
+  test(';; needs a space and skips pasted code; /query ;; replaces the query; questions get no hint', async ($, on) => {
+    mock.store(on, { level: 'full' })
+    mockSkills(on)
+    on('command.register', () => ({ value: undefined }))
+    on('ui.open', () => ({ value: { isPlaced: true } }))
+    const statuses: (string | undefined)[] = []
+    on('ui.status', (_$, e) => {
+      statuses.push((e as { text?: string }).text)
+      return { value: undefined }
+    })
+    on('session.start', (_$, e) => e)
+    on('command.list', () => ({ value: [{ name: 'dataviz', description: 'Charts', source: 'plugin' }] }))
+    on('prompt.edit', (_$, e) => ({
+      text: e.text.slice(0, e.start) + e.inputText + e.text.slice(e.end),
+      cursor: e.start + e.inputText.length,
+    }))
+    await $.session.start({ reason: 'startup', cwd: '/work' } as any)
+    const edit = (before: string, add: string) =>
+      $.prompt.edit({ origin: { kind: 'composer' }, text: before, cursor: before.length, start: before.length, end: before.length, inputText: add } as any)
+
+    expect((await edit('case x) echo chart', ';;')).text).toBe('case x) echo chart;;')
+    expect((await edit('```\ncase $1 in a) draw a chart ', ';;')).text).toBe('```\ncase $1 in a) draw a chart ;;')
+    expect((await edit('/grafik ', ';;')).text).toBe('/dataviz ')
+
+    statuses.length = 0
+    await edit('what does the word chart mea', 'n')
+    expect(statuses.some(x => typeof x === 'string' && x.includes('/dataviz'))).toBe(false)
+  })
 })

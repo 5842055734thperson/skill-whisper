@@ -5,7 +5,7 @@
 <p align="center">Suggests the right installed skill while you type, and makes Claude point you to skills it can't start itself.</p>
 
 <p align="center">
-  <img alt="Version 0.8.1" src="https://img.shields.io/badge/version-0.8.1-blue">
+  <img alt="Version 0.8.2" src="https://img.shields.io/badge/version-0.8.2-blue">
   <img alt="Claude Code mod" src="https://img.shields.io/badge/Claude%20Code-mod-d97757">
   <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green">
   <a href="https://www.buymeacoffee.com/5842055734thperson"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black"></a>
@@ -52,7 +52,7 @@ Clicking a skill in the pane puts `/skill` in front of what you already typed. I
 
 ## Typing shortcut
 
-End your draft with `;;` to put the suggested skill at the start of your message. This works at the `full` level. With a chart skill such as `dataviz` installed:
+End your draft with a space and `;;` to put the suggested skill at the start of your message. This works at the `full` level. With a chart skill such as `dataviz` installed:
 
 ```text
 monthly revenue chart ;;
@@ -64,7 +64,9 @@ becomes:
 /dataviz monthly revenue chart
 ```
 
-While you type, the status line shows the current suggestion, for example `💬 /dataviz · charts and dashboards · end with ;;`. The skill names you see depend on what you have installed. Manual-only skills are tagged `[manual]`. If no skill fits, `;;` leaves your text alone.
+While you type, the status line shows the current suggestion, for example `💬 /dataviz · charts and dashboards · end with ;;`. The skill names you see depend on what you have installed. Manual-only skills are tagged `[manual]`. If no skill fits, `;;` leaves your text alone. A lone search like `/grafik ;;` becomes `/dataviz `.
+
+Suggestions appear on their own only for task-like drafts: questions (“what does…”, “nedir”) get no hint, and a weak match needs an action word such as *make*, *draw* or *çiz*. `;;` skips that check, because you asked. It also never fires inside a fenced code block or on shell lines like `echo x;;`, since it needs a space before it.
 
 The shortcut is typed text because the Claude desktop app doesn't pass key combinations to mods. In a terminal session you also get a dim inline hint and Tab completion.
 
@@ -99,9 +101,9 @@ An entry is used only when that skill is installed. The file ships with English 
 
 Everything runs on your machine. The mod reads `SKILL.md` front matter in your Claude config folder. It calls no model, and it sends nothing over the network.
 
-## Measured results
+## Preliminary results
 
-Each setup ran the same 20 prompts with `claude -p`, Opus 5.5, and at most 2 turns. Of those, 16 need a skill that Claude can start, and 4 need a manual-only skill:
+These numbers are an early check, not a benchmark. Each setup ran the same 20 prompts with `claude -p`, Opus 5.5, and at most 2 turns. Of those, 16 need a skill that Claude can start, and 4 need a manual-only skill:
 
 | Setup | Skill invoked (of 16) | Manual skill named (of 4) |
 |---|---|---|
@@ -111,7 +113,7 @@ Each setup ran the same 20 prompts with `claude -p`, Opus 5.5, and at most 2 tur
 
 In v0.8, the one auto miss (a slide deck) went to the host's Artifact tool, and the one manual miss (a design doc) went to the `docs` skill instead of `/egm:egm-draft`.
 
-Each setup ran once, on prompts the author wrote. The [process documents](docs/process/README.md) list the caveats. To run the measurements on your own install, see [`eval/README.md`](eval/README.md).
+Each setup ran once, on prompts the author wrote, so treat the results as preliminary. The [process documents](docs/process/README.md) list the caveats. To run the measurements on your own install, see [`eval/README.md`](eval/README.md).
 
 ## Known limits
 

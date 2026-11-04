@@ -186,7 +186,7 @@ export function matchSkillsForDraft(
   const slashOnly = trimmed.match(/^\/([^\s/]+)$/)
   if (slashOnly) {
     const rawQ = slashOnly[1].toLowerCase()
-    const q = foldTr(rawQ)
+    const q = foldTr(slashOnly[1]) // fold first: 'İ'.toLowerCase() leaves a combining dot
     if (q.length < 2) return []
 
     // Yield to Claude Code's native slash menu if an installed command already starts with rawQ
@@ -550,8 +550,39 @@ export const TRIGGER = ';;'
 
 /** `draft ;;` -> the draft without the trigger, or null when the draft does not end with it. */
 export function stripTrigger(text: string): string | null {
-  const t = text.trimEnd()
-  return t.endsWith(TRIGGER) ? t.slice(0, -TRIGGER.length).trimEnd() : null
+  // Needs text, a space, then ;; at the very end. That rules out shell `case` arms (`echo x;;`, a line of `;;`),
+  // `for(;;)` and anything inside a fenced code block.
+  if (text.includes('```') || !/[^\s;][ \t]+;;[ \t]*$/.test(text)) return null
+  return text.trimEnd().slice(0, -TRIGGER.length).trimEnd()
+}
+
+/** `/grafik` alone is a search for a skill, so the pick replaces it instead of being prepended to it. */
+export function fillForPick(base: string, skill: string, known: ReadonlySet<string>): string {
+  return /^\/[^\s/]+$/.test(base.trim()) ? `/${skill} ` : buildFilledDraft(base, skill, known)
+}
+
+const QUESTION_WORDS = new Set([
+  'what', 'why', 'how', 'when', 'where', 'which', 'who', 'does', 'is', 'are', 'can', 'should',
+  'ne', 'nedir', 'neden', 'nasil', 'hangi', 'kim', 'mi', 'mu', 'misin', 'midir', 'demek',
+])
+const INTENT_STEMS = [
+  'make', 'draw', 'create', 'build', 'generate', 'design', 'add', 'write', 'review', 'check', 'audit',
+  'fix', 'deploy', 'migrate', 'convert', 'rewrite', 'analyze', 'analyse', 'improve', 'optimize',
+  'refactor', 'brainstorm', 'draft', 'render', 'export', 'turn', 'clean', 'extract', 'teach',
+  'ciz', 'yap', 'olustur', 'hazirla', 'tasarla', 'ekle', 'yaz', 'incele', 'denetle', 'duzelt',
+  'kontrol', 'analiz', 'donustur', 'cevir', 'iyilestir', 'gelistir', 'cikar', 'ogret', 'temizle',
+]
+
+/**
+ * Whether a match is strong enough to show unasked (status line, ghost text, typeahead).
+ * Questions get no hint, and a weak match needs an action word: "what does excel mean" or
+ * "plot twist: ..." should not suggest a skill. `;;` skips this check, because the user asked.
+ */
+export function isConfidentHint(draft: string, score: number): boolean {
+  const words = tokenizeWords(foldTr(draft))
+  if (draft.trimEnd().endsWith('?') || words.some(w => QUESTION_WORDS.has(w))) return false
+  if (score >= 12) return true
+  return score >= 7 && words.some(w => INTENT_STEMS.some(v => w === v || (v.length >= 3 && w.startsWith(v))))
 }
 
 /**

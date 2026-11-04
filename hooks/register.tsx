@@ -12,6 +12,8 @@ import {
   buildRouterSection,
   enrichSkillListing,
   matchSkillsForDraft,
+  fillForPick,
+  isConfidentHint,
   parseFrontmatter,
   resolveTabRewrite,
   stripTrigger,
@@ -123,6 +125,7 @@ export const register: Register = on => {
     diskCache = null
     cmdCache = null
     pendingTab = null
+    shown = null
     await $.command.register({ name: 'whisper', description: 'Skill Whisper level: full, lite or off' })
     await $.command.register({ name: 'whisper-help', description: 'List installed skills by plugin' })
     await $.command.register({ name: 'whisper-ui', description: 'Open the Skill Whisper control center' })
@@ -155,6 +158,7 @@ export const register: Register = on => {
   on('command.run', { command: 'whisper-help' }, async $ => {
     const cmds = await listCommands($)
     cmdCache = cmds
+    if (diskCache === null && ready) await ready
     diskCache ??= await scanDiskSkills($).catch(() => new Map())
     return { text: buildHelpText(buildLibrary(diskCache, cmds)) }
   })
@@ -174,14 +178,15 @@ export const register: Register = on => {
       if (ready) await ready
       const hit = matchSkillsForDraft(base, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)[0]
       if (hit) {
-        const text = buildFilledDraft(base, hit.name, buildKnownCommands((cmdCache ?? []).map(c => c.name)))
+        const text = fillForPick(base, hit.name, buildKnownCommands((cmdCache ?? []).map(c => c.name)))
         void showSuggestion($, undefined)
         return { ...out, text, cursor: text.length }
       }
     }
-    const matches = matchSkillsForDraft(out.text, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)
-    void showSuggestion($, matches[0])
-    const ghost = buildGhostDecoration(out.text, out.cursor, matches[0])
+    const top = matchSkillsForDraft(out.text, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)[0]
+    const hint = top && isConfidentHint(out.text, top.score) ? top : undefined
+    void showSuggestion($, hint)
+    const ghost = buildGhostDecoration(out.text, out.cursor, hint)
     if (!ghost) return out
     return {
       ...out,
@@ -200,10 +205,13 @@ export const register: Register = on => {
     if (cmdCache === null) {
       cmdCache = await listCommands($)
     }
+    if (diskCache === null && ready) await ready
     if (diskCache === null) {
       diskCache = await scanDiskSkills($).catch(() => new Map())
     }
-    const matches = matchSkillsForDraft(e.text, buildLibrary(diskCache, cmdCache), diskCache, cmdCache, 3)
+    const matches = matchSkillsForDraft(e.text, buildLibrary(diskCache, cmdCache), diskCache, cmdCache, 3).filter(m =>
+      e.text.trim().startsWith('/') || isConfidentHint(e.text, m.score),
+    )
     const built = buildAutocompleteSuggestions(e, matches)
     pendingTab = built.pending
     if (built.suggestions.length === 0) return out
@@ -234,7 +242,7 @@ export const register: Register = on => {
     if (base !== null) {
       if (ready) await ready
       const hit = matchSkillsForDraft(base, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)[0]
-      if (hit) return next({ ...e, text: buildFilledDraft(base, hit.name, buildKnownCommands((cmdCache ?? []).map(c => c.name))) })
+      if (hit) return next({ ...e, text: fillForPick(base, hit.name, buildKnownCommands((cmdCache ?? []).map(c => c.name))) })
     }
     if (pendingTab !== null) {
       const known = buildKnownCommands((cmdCache ?? []).map(c => c.name))
@@ -253,6 +261,7 @@ export const register: Register = on => {
     if (lv === 'off' || ev.type !== 'skill_listing' || typeof ev.text !== 'string') {
       return next(e)
     }
+    if (diskCache === null && ready) await ready
     if (diskCache === null) {
       diskCache = await scanDiskSkills($).catch(() => new Map())
     }
@@ -269,6 +278,7 @@ export const register: Register = on => {
     if (lv === 'off' || e.traits.includes('bare')) return out
     const cmds = await listCommands($)
     cmdCache = cmds
+    if (diskCache === null && ready) await ready
     diskCache ??= await scanDiskSkills($).catch(() => new Map())
     const groups = buildLibrary(diskCache, cmds)
     return {
@@ -285,6 +295,7 @@ export const register: Register = on => {
     const sug = await read($, suggestion)
     const cmds = await listCommands($)
     cmdCache = cmds
+    if (diskCache === null && ready) await ready
     diskCache ??= await scanDiskSkills($).catch(() => new Map())
     const visibleGroups = buildLibrary(diskCache, cmds)
 

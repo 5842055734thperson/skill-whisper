@@ -10,6 +10,8 @@ Scripts that measure whether Claude picks the right skill, with and without the 
 
 Your results will differ from the author's if your installed skills differ.
 
+Known bias: `hooks/aliases.ts` was written by the author who also wrote these prompts, and several held-out prompts (`pdf`, `xlsx`, `pick-ui-library`, `prototype`, `egm-drift-report`) use words that are in it. Prompts written by someone else would be a fairer test.
+
 ## Runs
 
 Run these from the repository root.
