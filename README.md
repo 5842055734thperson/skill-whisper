@@ -1,12 +1,12 @@
-<h1 align="center">💬</h1> 
-  
-<h1 align="center">skill-whisper</h1> 
+<h1 align="center">💬</h1>
+
+<h1 align="center">skill-whisper</h1>
 
 <p align="center">Suggests the right installed skill while you type, and makes Claude point you to skills it can't start itself.</p>
 
-<h2 align="center">
-  <a href="https://www.buymeacoffee.com/5842055734thperson"><img alt="Buy Me a Beer" src="https://img.shields.io/badge/Buy%20Me%20a%20Beer-ffdd00?logo=buy-me-a-beer&logoColor=black"></a>
-</h2>
+<p align="center">
+  <a href="https://www.buymeacoffee.com/5842055734thperson"><img alt="Buy Me a Beer" src="https://img.shields.io/badge/Buy%20Me%20a%20Beer-ffdd00?logo=buymeacoffee&logoColor=black"></a>
+</p>
 
 Skill Whisper is a Claude Code mod for people with many skills installed. It reads the skills on your machine, suggests the one that fits your draft, and puts `/skill` at the start of your message when you type `;;`. It also tells Claude which skills are manual-only, so Claude says “run `/name`” instead of doing that work itself.
 
@@ -117,7 +117,10 @@ Each setup ran once, on prompts the author wrote, so treat the results as prelim
 These gaps are known and not fixed yet:
 
 - Claude Code's built-in skills that have no `SKILL.md` file (for example `loop` and `schedule`) aren't suggested while you type. Claude still sees them in its own skill list.
-- Matching while you type uses keywords, so it can miss a skill or suggest the wrong one.
+- Matching while you type uses keywords, so it can miss a skill or suggest the wrong one. A v0.8.3 audit found three common cases, all fixes planned in [`docs/process/action_plan_v0.9.md`](docs/process/action_plan_v0.9.md):
+  - **Missed hints on real requests**: a question word anywhere in the draft hides the hint, so “my animation is janky, make it 60fps” and Turkish drafts with *iş* get none
+  - **False hints from one common word**: words that are also part of a skill name, such as *local*, *native*, *import* or *plan*, can show an unrelated skill
+  - **Turkish drafts**: skills with no Turkish alias are found only from English words
 - The false-alarm rate on prompts that need no skill wasn't re-measured for v0.8.
 - Tested with Claude Code 2.1.316 on Windows.
 
@@ -138,7 +141,7 @@ The design, measurements and reviews behind each version are in [`docs/process/`
 
 ## Support the project
 
-Skill Whisper is free and MIT-licensed. If it saves you time, you can [buy me a coffee](https://www.buymeacoffee.com/5842055734thperson). Bug reports and pull requests help too.
+Skill Whisper is free and MIT-licensed. If it saves you time, you can [buy me a beer](https://www.buymeacoffee.com/5842055734thperson). Bug reports and pull requests help too.
 
 ## License
 
