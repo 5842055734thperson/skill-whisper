@@ -4,12 +4,9 @@
 
 <p align="center">Suggests the right installed skill while you type, and makes Claude point you to skills it can't start itself.</p>
 
-<p align="center">
-  <img alt="Version 0.8.3" src="https://img.shields.io/badge/version-0.8.3-blue">
-  <img alt="Claude Code mod" src="https://img.shields.io/badge/Claude%20Code-mod-d97757">
-  <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green">
+<h2 align="center">
   <a href="https://www.buymeacoffee.com/5842055734thperson"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black"></a>
-</p>
+</h2>
 
 Skill Whisper is a Claude Code mod for people with many skills installed. It reads the skills on your machine, suggests the one that fits your draft, and puts `/skill` at the start of your message when you type `;;`. It also tells Claude which skills are manual-only, so Claude says “run `/name`” instead of doing that work itself.
 
