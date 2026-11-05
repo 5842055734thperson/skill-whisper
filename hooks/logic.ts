@@ -490,7 +490,7 @@ export function enrichSkillListing(
   const lookupDisk = (name: string): DiskSkill | undefined =>
     diskSkills.get(name) ?? diskSkills.get(shortName(name))
 
-  const lines = listingText.split('\n').map(line => {
+  const lines = listingText.split(/\r?\n/).map(line => {
     const m = line.match(/^(\s*-\s+)([A-Za-z0-9_.:-]+)(\s*:\s*(.*))?$/)
     if (!m) return line
     const [, prefix, name, colonPart, existingDesc] = m
@@ -550,9 +550,13 @@ export const TRIGGER = ';;'
 
 /** `draft ;;` -> the draft without the trigger, or null when the draft does not end with it. */
 export function stripTrigger(text: string): string | null {
-  // Needs text, a space, then ;; at the very end. That rules out shell `case` arms (`echo x;;`, a line of `;;`),
-  // `for(;;)` and anything inside a fenced code block.
-  if (text.includes('```') || !/[^\s;][ \t]+;;[ \t]*$/.test(text)) return null
+  // Needs text, a space, then ;; at the very end. That rules out `echo x;;`, a line of `;;` and `for(;;)`.
+  if (!/[^\s;][ \t]+;;[ \t]*$/.test(text)) return null
+  // Inside an unclosed ``` block, ;; is code. A closed block earlier in the draft is fine.
+  if ((text.match(/```/g) ?? []).length % 2 === 1) return null
+  // Shell `case` arms: `case $x in a) echo foo ;;`, or a last line such as `1) ;;` or `  a) cmd ;;`.
+  const lastLine = text.trimEnd().split(/\r?\n/).pop() ?? ''
+  if (/\bcase\b[^\n]*\bin\b/.test(text) || /^\s*[^\s)]*\)/.test(lastLine)) return null
   return text.trimEnd().slice(0, -TRIGGER.length).trimEnd()
 }
 

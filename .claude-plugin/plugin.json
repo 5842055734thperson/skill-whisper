@@ -1,6 +1,6 @@
 {
   "name": "skill-whisper",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Whispers the installed skill that fits what you are typing: status-line hint, ;; to prefix it, manual-vs-auto routing, host skill_listing enrichment and a draft-safe pane.",
   "author": {
     "name": "5842055734thperson"

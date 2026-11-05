@@ -5,7 +5,7 @@
 <p align="center">Suggests the right installed skill while you type, and makes Claude point you to skills it can't start itself.</p>
 
 <p align="center">
-  <img alt="Version 0.8.2" src="https://img.shields.io/badge/version-0.8.2-blue">
+  <img alt="Version 0.8.3" src="https://img.shields.io/badge/version-0.8.3-blue">
   <img alt="Claude Code mod" src="https://img.shields.io/badge/Claude%20Code-mod-d97757">
   <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green">
   <a href="https://www.buymeacoffee.com/5842055734thperson"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black"></a>
@@ -103,7 +103,7 @@ Everything runs on your machine. The mod reads `SKILL.md` front matter in your C
 
 ## Preliminary results
 
-These numbers are an early check, not a benchmark. Each setup ran the same 20 prompts with `claude -p`, Opus 5.5, and at most 2 turns. Of those, 16 need a skill that Claude can start, and 4 need a manual-only skill:
+These numbers are an early check, not a benchmark. Each setup ran the same 20 prompts with `claude -p`, Opus 5.5, and at most 2 turns. Of those, 16 need a skill that Claude can start, and 4 need a manual-only skill. The no-mod and v0.3 runs also included 10 prompts that need no skill, and both stayed quiet on all 10; v0.8 was not run on those 10, so its false-alarm rate is unknown:
 
 | Setup | Skill invoked (of 16) | Manual skill named (of 4) |
 |---|---|---|

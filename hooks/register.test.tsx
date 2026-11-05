@@ -584,4 +584,39 @@ describe('skill-whisper mod', () => {
     await edit('what does the word chart mea', 'n')
     expect(statuses.some(x => typeof x === 'string' && x.includes('/dataviz'))).toBe(false)
   })
+
+  test('shell case arms do not fire ;;, a closed code block does not block it, and the pane replaces a /query', async ($, on) => {
+    mock.store(on, { level: 'full' })
+    mockSkills(on)
+    on('command.register', () => ({ value: undefined }))
+    on('ui.open', () => ({ value: { isPlaced: true } }))
+    on('ui.status', () => ({ value: undefined }))
+    on('session.start', (_$, e) => e)
+    on('command.list', () => ({ value: [{ name: 'dataviz', description: 'Charts', source: 'plugin' }] }))
+    on('prompt.edit', (_$, e) => ({
+      text: e.text.slice(0, e.start) + e.inputText + e.text.slice(e.end),
+      cursor: e.start + e.inputText.length,
+    }))
+    let box = { text: '/grafik', cursor: 7 }
+    on('prompt.read', () => ({ value: box }))
+    const fills: string[] = []
+    on('prompt.fill', (_$, e) => {
+      fills.push((e as { text: string }).text)
+      return { isFilled: true }
+    })
+    await $.session.start({ reason: 'startup', cwd: '/work' } as any)
+    const edit = (before: string, add: string) =>
+      $.prompt.edit({ origin: { kind: 'composer' }, text: before, cursor: before.length, start: before.length, end: before.length, inputText: add } as any)
+
+    expect((await edit('case $x in a) draw a chart ', ';;')).text).toBe('case $x in a) draw a chart ;;')
+    expect((await edit('esac\n  1) draw a chart ', ';;')).text).toBe('esac\n  1) draw a chart ;;')
+    expect((await edit('```json\n{}\n```\ndraw a chart ', ';;')).text).toBe('/dataviz ```json\n{}\n```\ndraw a chart')
+
+    const pane = await $.ui.mount({
+      plugin: 'skill-whisper', surface: 'desktop', component: 'Pane', props: {}, requestId: 'skill-whisper',
+      viewport: { columns: 90, rows: 30 },
+    })
+    await pane.press({ key: 'skill-dataviz' })
+    expect(fills.at(-1)).toBe('/dataviz ')
+  })
 })

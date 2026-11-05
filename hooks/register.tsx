@@ -4,7 +4,6 @@ import type { EngineInterface, Register } from 'claude-code'
 import type { Level, Suggestion } from '../types'
 import {
   buildAutocompleteSuggestions,
-  buildFilledDraft,
   buildGhostDecoration,
   buildHelpText,
   buildKnownCommands,
@@ -97,14 +96,11 @@ async function scanDiskSkills($: EngineInterface): Promise<Map<string, DiskSkill
   return map
 }
 
-let shown: string | null = null
-
 // The desktop app fires prompt.edit but paints no decorations and fires no prompt.autocomplete,
 // so the suggestion also goes to the status line and the pane, which every surface draws.
 async function showSuggestion($: EngineInterface, m: SkillMatch | undefined) {
   const key = m ? m.name : null
-  if (key === shown) return
-  shown = key
+  if (key === ((await read($, suggestion))?.name ?? null)) return // per-session state; avoids redraws on every key
   await update($, suggestion, () => (m ? { name: m.name, reason: m.reason, manual: m.manual } : null))
   $.ui.status(m ? `💬 /${m.name}${m.manual ? ' [manual]' : ''} · ${m.reason} · end with ;;` : '💬 whisper: full')
 }
@@ -125,7 +121,7 @@ export const register: Register = on => {
     diskCache = null
     cmdCache = null
     pendingTab = null
-    shown = null
+    await update($, suggestion, () => null)
     await $.command.register({ name: 'whisper', description: 'Skill Whisper level: full, lite or off' })
     await $.command.register({ name: 'whisper-help', description: 'List installed skills by plugin' })
     await $.command.register({ name: 'whisper-ui', description: 'Open the Skill Whisper control center' })
@@ -185,7 +181,7 @@ export const register: Register = on => {
     }
     const top = matchSkillsForDraft(out.text, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)[0]
     const hint = top && isConfidentHint(out.text, top.score) ? top : undefined
-    void showSuggestion($, hint)
+    await showSuggestion($, hint)
     const ghost = buildGhostDecoration(out.text, out.cursor, hint)
     if (!ghost) return out
     return {
@@ -236,7 +232,7 @@ export const register: Register = on => {
 
   // Safety fallback if the user submits before microtask rewrite settles
   on('prompt.submit', async ($, e, next) => {
-    if (shown !== null) void showSuggestion($, undefined)
+    void showSuggestion($, undefined)
     // Same shortcut at send time, in case the box did not take the edit-time rewrite.
     const base = (await read($, level)) === 'full' ? stripTrigger(e.text) : null
     if (base !== null) {
@@ -304,7 +300,7 @@ export const register: Register = on => {
       const latestCmds = await listCommands($)
       cmdCache = latestCmds
       const known = buildKnownCommands(latestCmds.map(c => c.name))
-      const nextText = buildFilledDraft(text, s.name, known)
+      const nextText = fillForPick(text, s.name, known)
       const res = await $.prompt.fill({ text: nextText, mode: 'replace' })
       if (!res.isFilled) {
         $.ui.status(`💬 whisper: the prompt box is not available (/${s.name})`)
@@ -332,7 +328,7 @@ export const register: Register = on => {
           <Box flexDirection="column">
             <Text bold>Suggestion (from your draft)</Text>
             <Box gap={1}>
-              <Button key="suggest" label={`/${sug.name} ekle`} variant="primary" onPress={() => pick(sug)} />
+              <Button key="suggest" label={`Add /${sug.name}`} variant="primary" onPress={() => pick(sug)} />
               <Text dimColor>{sug.reason}{sug.manual ? ' [manual]' : ''}</Text>
             </Box>
           </Box>
