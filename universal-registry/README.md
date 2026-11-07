@@ -8,7 +8,6 @@
 
 <p align="center">
   <a href="../skill-whisper/.claude-plugin/plugin.json"><img height="20" alt="Version 0.8.3" src="https://img.shields.io/badge/version-0.8.3-blue"></a>
-  <a href="../playground.html"><img height="20" alt="Interactive Playground" src="https://img.shields.io/badge/playground-interactive%20demo-8a2be2"></a>
   <a href="../LICENSE"><img height="20" alt="MIT License" src="https://img.shields.io/badge/license-MIT-green"></a>
   <a href="skills_registry.json"><img height="20" alt="347 skills" src="https://img.shields.io/badge/skills-347-informational"></a>
   <a href="test_system.py"><img height="20" alt="Tests 13/13" src="https://img.shields.io/badge/tests-13%2F13%20passed-brightgreen"></a>
@@ -27,29 +26,25 @@ Each agent handles user input differently, so Skill Whisper uses the native mech
 
 In Claude Code, a local hook watches your draft before you send it. When your words match an installed skill, the terminal shows an inline hint and a status bar message. Typing a space and `;;` at the end of your draft moves the matched `/skill` to the front of your prompt before it goes to the model.
 
-![Claude Code flow](assets/claude-flow.gif)
+<p align="center">
+  <img src="assets/claude-flow.gif" width="100%" alt="Claude Code flow">
+</p>
 
 ### Antigravity and Gemini CLI
 
 Antigravity and Gemini CLI do not expose a pre-send keystroke hook. Instead, Skill Whisper compiles an instruction rule into `AGENTS.md` and `GEMINI.md`. You type and send your prompt as usual. When an installed skill matches your task, the agent replies with a `Skill:` line naming the skill, reads that skill's `SKILL.md` file with `read_file`, and follows its steps.
 
-![Antigravity and Gemini flow](assets/gemini-flow.gif)
+<p align="center">
+  <img src="assets/gemini-flow.gif" width="100%" alt="Antigravity and Gemini flow">
+</p>
 
 ### OpenAI Codex and GitHub Copilot
 
 OpenAI Codex and GitHub Copilot read repository instructions from `AGENTS.md` and `.github/copilot-instructions.md`. You send your prompt in the chat box, and the agent checks the compiled routing table, loads the matching `SKILL.md` runbook, and replies with the output.
 
-![OpenAI Codex and Copilot flow](assets/copilot-flow.gif)
-
-## Interactive test playground
-
-Click the card below to open [`../playground.html`](../playground.html) (or [`test_playground.html`](test_playground.html)) and test skill matching across all 347 skills in your browser without installing anything:
-
-[![Click to launch interactive playground](assets/playground-card.gif)](test_playground.html)
-
-- **Open locally**: Click the card above or open [`test_playground.html`](test_playground.html) in any web browser.
-- **GitHub Pages**: When GitHub Pages is enabled for the repository, point the image link to `https://5842055734thperson.github.io/skill-whisper/playground.html` so visitors on GitHub open the live playground in one click.
-- **Run in terminal**: Run the automated test suite with `python test_system.py`.
+<p align="center">
+  <img src="assets/copilot-flow.gif" width="100%" alt="OpenAI Codex and Copilot flow">
+</p>
 
 ## Install
 

@@ -25,33 +25,25 @@ Each agent handles user input differently, so Skill Whisper uses the native mech
 
 In Claude Code, a local hook watches your draft before you send it. When your words match an installed skill, the status line shows it, and the `/whisper-ui` pane offers it as a button. A terminal session also shows a dim inline hint; the Claude desktop app does not draw that hint. Typing a space and `;;` at the end of your draft moves the matched `/skill` to the front of your prompt before it goes to the model.
 
-![Claude Code flow](assets/claude-flow.gif)
+<p align="center">
+  <img src="assets/claude-flow.gif" width="100%" alt="Claude Code flow">
+</p>
 
 ### Antigravity and Gemini CLI
 
 Antigravity and Gemini CLI do not expose a pre-send keystroke hook. Instead, Skill Whisper compiles an instruction rule into `AGENTS.md` and `GEMINI.md`. You type and send your prompt as usual. When an installed skill matches your task, the agent replies with a `Skill:` line naming the skill, reads that skill's `SKILL.md` file with `read_file`, and follows its steps.
 
-![Antigravity and Gemini flow](assets/gemini-flow.gif)
+<p align="center">
+  <img src="assets/gemini-flow.gif" width="100%" alt="Antigravity and Gemini flow">
+</p>
 
 ### OpenAI Codex and GitHub Copilot
 
 OpenAI Codex and GitHub Copilot read repository instructions from `AGENTS.md` and `.github/copilot-instructions.md`. You send your prompt in the chat box, and the agent checks the compiled routing table, loads the matching `SKILL.md` runbook, and replies with the output.
 
-![OpenAI Codex and Copilot flow](assets/copilot-flow.gif)
-
-## Interactive test playground
-
-The playground is a single HTML page that tests skill matching on the skills installed on your machine. It is not in this repository, because it embeds a list of every installed skill. Build it from the repository root:
-
-[![Interactive playground preview](assets/playground-card.gif)](#interactive-test-playground)
-
-```bash
-python universal-registry/build_registry.py
-python universal-registry/compiler.py
-python universal-registry/build_playground.py
-```
-
-Then open `playground.html` in any web browser. The automated checks run with `python universal-registry/test_system.py`.
+<p align="center">
+  <img src="assets/copilot-flow.gif" width="100%" alt="OpenAI Codex and Copilot flow">
+</p>
 
 ## Install
 

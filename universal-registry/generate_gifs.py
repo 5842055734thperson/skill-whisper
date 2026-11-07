@@ -3,10 +3,10 @@ import os
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-# Render at 2x retina scale (1440x520) and downsample to 720x260 for razor-sharp anti-aliased line art
-SCALE = 2
+# Render at 4x (2880x1040) and downsample to 1440x520 so the GIFs stay sharp at full README width
+SCALE = 4
 W, H = 720 * SCALE, 260 * SCALE
-FINAL_W, FINAL_H = 720, 260
+FINAL_W, FINAL_H = 1440, 520
 
 BG_WHITE = (255, 255, 255)
 INK_BLACK = (17, 17, 17)
