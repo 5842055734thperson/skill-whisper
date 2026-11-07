@@ -7,13 +7,14 @@ import {
   buildGhostDecoration,
   buildHelpText,
   buildKnownCommands,
-  buildLibrary,
+  buildLibrary as buildLibraryFrom,
   buildRouterSection,
   enrichSkillListing,
   matchSkillsForDraft,
   fillForPick,
   isConfidentHint,
   parseFrontmatter,
+  parseSkillListing,
   resolveTabRewrite,
   stripTrigger,
 } from './logic'
@@ -115,10 +116,14 @@ export const register: Register = on => {
   let diskCache: Map<string, DiskSkill> | null = null
   let cmdCache: CmdEntry[] | null = null
   let ready: Promise<unknown> | null = null // the first skill scan; ;; waits for it
+  let listing: Map<string, string> | null = null // skills the host lists, including built-ins with no SKILL.md
+  const buildLibrary = (disk: ReadonlyMap<string, DiskSkill>, cmds: readonly CmdEntry[]) =>
+    buildLibraryFrom(disk, cmds, listing ?? undefined)
   let pendingTab: PendingTab | null = null
 
   on('session.start', async ($, e, next) => {
     diskCache = null
+    listing = null
     cmdCache = null
     pendingTab = null
     await update($, suggestion, () => null)
@@ -137,6 +142,7 @@ export const register: Register = on => {
 
   on('command.run', { command: ['reload-plugins', 'reload-skills'] }, async (_$, e, next) => {
     diskCache = null
+    listing = null
     cmdCache = null
     pendingTab = null
     return next(e)
@@ -180,7 +186,7 @@ export const register: Register = on => {
       }
     }
     const top = matchSkillsForDraft(out.text, buildLibrary(diskCache ?? new Map(), cmdCache ?? []), diskCache ?? new Map(), cmdCache ?? [], 1)[0]
-    const hint = top && isConfidentHint(out.text, top.score) ? top : undefined
+    const hint = top && isConfidentHint(out.text, top) ? top : undefined
     await showSuggestion($, hint)
     const ghost = buildGhostDecoration(out.text, out.cursor, hint)
     if (!ghost) return out
@@ -206,7 +212,7 @@ export const register: Register = on => {
       diskCache = await scanDiskSkills($).catch(() => new Map())
     }
     const matches = matchSkillsForDraft(e.text, buildLibrary(diskCache, cmdCache), diskCache, cmdCache, 3).filter(m =>
-      e.text.trim().startsWith('/') || isConfidentHint(e.text, m.score),
+      e.text.trim().startsWith('/') || isConfidentHint(e.text, m),
     )
     const built = buildAutocompleteSuggestions(e, matches)
     pendingTab = built.pending
@@ -263,6 +269,7 @@ export const register: Register = on => {
     }
     const cmds = await listCommands($)
     cmdCache = cmds
+    listing = parseSkillListing(ev.text) // the host's own text, read before the mod adds to it
     const enriched = enrichSkillListing(ev.text, diskCache, cmds)
     if (enriched === ev.text) return next(e)
     return next({ ...e, text: enriched } as typeof e)

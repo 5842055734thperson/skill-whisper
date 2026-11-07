@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 340" width="100%" height="100%">
+  <defs>
+    <style>
+      :root {
+        --color-page: #0a0a0a;
+        --color-paper: #141414;
+        --color-bar: #1b1b1b;
+        --color-border: #2b2b2b;
+        --color-ink: #f5f5f5;
+        --color-muted: #9a9a9a;
+        --color-soft: #5c5c5c;
+        --color-accent: #ff5a36;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --color-page: #f5f5f5;
+          --color-paper: #ffffff;
+          --color-bar: #eeeeee;
+          --color-border: #d0d7de;
+          --color-ink: #111111;
+          --color-muted: #555555;
+          --color-soft: #888888;
+          --color-accent: #eb6c36;
+        }
+      }
+
+      .mono {
+        font-family: ui-monospace, "SF Mono", "Geist Mono", "Cascadia Code", monospace;
+        font-size: 13.5px;
+        fill: var(--color-ink);
+      }
+      .dim { fill: var(--color-muted); }
+      .soft { fill: var(--color-soft); }
+      .accent { fill: var(--color-accent); }
+      .border-line { stroke: var(--color-border); stroke-width: 1; }
+      .accent-line { stroke: var(--color-accent); stroke-width: 2; }
+      .dashed-box {
+        stroke: var(--color-border);
+        stroke-width: 1;
+        stroke-dasharray: 4 4;
+        fill: var(--color-bar);
+      }
+      .solid-box {
+        stroke: var(--color-border);
+        stroke-width: 1;
+        fill: var(--color-bar);
+      }
+
+      @keyframes blink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+      }
+      .cursor { animation: blink 0.8s infinite; }
+
+      @keyframes animPhase1 {
+        0%, 31% { opacity: 1; visibility: visible; }
+        33%, 98% { opacity: 0; visibility: hidden; }
+        100% { opacity: 1; visibility: visible; }
+      }
+      @keyframes animPhase2 {
+        0%, 33% { opacity: 0; visibility: hidden; }
+        35%, 64% { opacity: 1; visibility: visible; }
+        66%, 100% { opacity: 0; visibility: hidden; }
+      }
+      @keyframes animPhase3 {
+        0%, 66% { opacity: 0; visibility: hidden; }
+        68%, 97% { opacity: 1; visibility: visible; }
+        99%, 100% { opacity: 0; visibility: hidden; }
+      }
+
+      .phase-1 { animation: animPhase1 8.5s infinite; }
+      .phase-2 { animation: animPhase2 8.5s infinite; }
+      .phase-3 { animation: animPhase3 8.5s infinite; }
+    </style>
+  </defs>
+
+  <!-- Background Base (Terminal Paper) -->
+  <rect width="100%" height="100%" fill="var(--color-paper)" rx="8" />
+  <rect x="15" y="15" width="710" height="310" rx="8" fill="none" class="border-line" />
+
+  <!-- Terminal Window Titlebar (from diagram-design primitive-terminal.md) -->
+  <line x1="15" y1="48" x2="725" y2="48" class="border-line" />
+  <circle cx="36" cy="32" r="4.5" fill="var(--color-accent)" />
+  <circle cx="50" cy="32" r="4.5" fill="var(--color-soft)" />
+  <circle cx="64" cy="32" r="4.5" fill="var(--color-soft)" />
+  <text x="84" y="36" class="mono" font-size="11.5" letter-spacing="0.5">claude-code — zero-token-matcher.sh</text>
+  <text x="605" y="36" class="mono dim" font-size="11">hooks/logic.ts</text>
+
+  <!-- Session Subtitle -->
+  <text x="36" y="74" class="mono dim" font-size="12">workspace/demo$ claude</text>
+  <text x="36" y="94" class="mono soft" font-size="11">─── 347 skills mounted locally · zero network latency ───</text>
+
+  <!-- Fixed Chat Input Baseline (Rock-solid, never jumps) -->
+  <line x1="36" y1="134" x2="704" y2="134" class="border-line" />
+  <text x="36" y="122" class="mono" font-size="15">&gt;</text>
+
+  <!-- ================= PHASE 1: USER TYPING & WHISPER HINT (0s - 2.8s) ================= -->
+  <g class="phase-1">
+    <animate attributeName="opacity" values="1;1;0;0;0;0;1" keyTimes="0;0.31;0.33;0.66;0.68;0.98;1" dur="8.5s" repeatCount="indefinite" />
+    <text x="56" y="122" class="mono">plot monthly revenue breakdown</text>
+    <line x1="315" y1="110" x2="315" y2="126" class="accent-line cursor" />
+
+    <!-- Whisper Ghost-Hint Box -->
+    <rect x="36" y="152" width="668" height="68" rx="6" class="dashed-box" />
+    <text x="52" y="180" class="mono" font-size="12.5">💬 Skill Whisper Hint: <tspan class="accent" font-weight="600">/dataviz</tspan> <tspan class="dim">(Press Tab or ;; to autocomplete)</tspan></text>
+    <text x="52" y="204" class="mono soft" font-size="11">Stem Match: "revenue", "plot" → dataviz (Chart.js interactive chart engine)</text>
+
+    <!-- Status Footer -->
+    <text x="36" y="254" class="mono soft" font-size="11">[Status: Real-time match · 0 LLM calls · 0 tokens · 0.12 ms latency]</text>
+  </g>
+
+  <!-- ================= PHASE 2: TAB AUTO-EXPANSION (2.8s - 5.6s) ================= -->
+  <g class="phase-2">
+    <animate attributeName="opacity" values="0;0;1;1;0;0;0" keyTimes="0;0.33;0.35;0.64;0.66;0.98;1" dur="8.5s" repeatCount="indefinite" />
+    <rect x="52" y="106" width="650" height="24" fill="var(--color-paper)" />
+    <text x="56" y="122" class="mono accent" font-weight="600">/dataviz</text>
+    <text x="135" y="122" class="mono">plot monthly revenue breakdown</text>
+    <text x="500" y="122" class="mono soft" font-size="11">[Expanded via Tab ✓]</text>
+
+    <!-- Activated Skill Card -->
+    <rect x="36" y="152" width="668" height="68" rx="6" class="solid-box" />
+    <text x="52" y="180" class="mono" font-size="12.5">✔ Skill Activated: <tspan class="accent" font-weight="600">Claude Core / dataviz</tspan></text>
+    <text x="52" y="204" class="mono dim" font-size="11">Action: Aggregating monthly revenue data into verified Chart.js template...</text>
+
+    <!-- Status Footer -->
+    <text x="36" y="254" class="mono soft" font-size="11">[Local execution ready · Token cost: 0 · Context stays clean]</text>
+  </g>
+
+  <!-- ================= PHASE 3: EXECUTION & ARTIFACT (5.6s - 8.5s) ================= -->
+  <g class="phase-3">
+    <animate attributeName="opacity" values="0;0;0;0;1;1;0" keyTimes="0;0.66;0.68;0.97;0.98;1;1" dur="8.5s" repeatCount="indefinite" />
+    <rect x="52" y="106" width="650" height="24" fill="var(--color-paper)" />
+    <text x="56" y="122" class="mono">/dataviz plot monthly revenue breakdown</text>
+
+    <!-- Final Result Box -->
+    <rect x="36" y="152" width="668" height="68" rx="6" class="solid-box" />
+    <text x="52" y="180" class="mono" font-size="12.5">📊 Artifact Generated: <tspan class="accent">artifacts/monthly_revenue.html</tspan></text>
+    <text x="52" y="204" class="mono dim" font-size="11">Enforced verified dataviz runbook template instead of improvising code.</text>
+
+    <!-- Status Footer -->
+    <text x="36" y="254" class="mono" font-size="11">✔ Task completed successfully · Zero hallucinations · Loop restarting...</text>
+  </g>
+
+  <!-- Corner Accents -->
+  <line x1="22" y1="305" x2="30" y2="305" class="border-line" />
+  <line x1="22" y1="305" x2="22" y2="297" class="border-line" />
+  <line x1="718" y1="305" x2="710" y2="305" class="border-line" />
+  <line x1="718" y1="305" x2="718" y2="297" class="border-line" />
+</svg>

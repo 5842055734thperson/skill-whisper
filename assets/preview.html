@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skill Whisper — Minimalist Floating Line-Art GIFs</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #ffffff;
+      color: #111111;
+      font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+      padding: 48px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 760px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .header {
+      border-bottom: 1px solid #e5e5e5;
+      padding-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .header p {
+      font-size: 12px;
+      color: #666666;
+      margin-top: 6px;
+    }
+    .flow-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .flow-block img {
+      width: 100%;
+      max-width: 720px;
+      height: auto;
+      display: block;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid #eeeeee;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>SKILL WHISPER — MINIMALIST LINE-ART FLOWS</h1>
+      <p>Pure black &amp; white floating GIF animations across Claude Code, Antigravity / Gemini, and Codex / Copilot</p>
+    </div>
+
+    <div class="flow-block">
+      <img src="claude-flow.gif" alt="Claude Code Flow" />
+    </div>
+
+    <hr class="divider" />
+
+    <div class="flow-block">
+      <img src="gemini-flow.gif" alt="Antigravity and Gemini Flow" />
+    </div>
+
+    <hr class="divider" />
+
+    <div class="flow-block">
+      <img src="copilot-flow.gif" alt="OpenAI Codex and Copilot Flow" />
+    </div>
+  </div>
+</body>
+</html>

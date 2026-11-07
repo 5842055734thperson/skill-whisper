@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SkillWhisperRegistry",
+  "description": "Canonical multi-harness registry of skills and aliases for Skill Whisper",
+  "type": "object",
+  "required": ["version", "skills"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string" },
+    "generated_by": { "type": "string" },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "aliases", "targets"],
+        "properties": {
+          "id": { "type": "string" },
+          "plugin": { "type": "string" },
+          "description": { "type": "string" },
+          "manual": { "type": "boolean" },
+          "aliases": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["claude", "antigravity", "gemini", "copilot", "mcp"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

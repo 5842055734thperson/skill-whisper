@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code CLI — Skill Whisper Zero-Latency Matcher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-page: #0a0a0a;
+      --color-paper: #141414;
+      --color-bar: #1b1b1b;
+      --color-border: #2b2b2b;
+      --color-ink: #f5f5f5;
+      --color-muted: #9a9a9a;
+      --color-soft: #5c5c5c;
+      --color-accent: #ff5a36;
+      --color-accent-tint: rgba(255, 90, 54, 0.12);
+      --font-mono: "Geist Mono", ui-monospace, monospace;
+      --font-sans: "Geist", system-ui, sans-serif;
+      --motion-fast: 160ms;
+      --motion-step: 480ms;
+      --motion-hold: 900ms;
+      --motion-ease: cubic-bezier(.2,.8,.2,1);
+    }
+    body {
+      font-family: var(--font-mono);
+      background: var(--color-page);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+    .terminal {
+      width: 100%;
+      max-width: 980px;
+      background: var(--color-paper);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .titlebar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--color-bar);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-soft);
+    }
+    .dot.accent { background: var(--color-accent); }
+    .titlebar-name {
+      flex: 1;
+      text-align: center;
+      color: var(--color-muted);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-right: 46px;
+    }
+    .frame { padding: 2rem 2.25rem; }
+    .eyebrow {
+      color: var(--color-muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      margin-bottom: 1.25rem;
+    }
+    h1::before { content: "# "; color: var(--color-soft); }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    svg { width: 100%; min-width: 880px; display: block; }
+
+    /* Motion Items Progressive Enhancement */
+    .motion-ready [data-motion-item] {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity var(--motion-step) var(--motion-ease), transform var(--motion-step) var(--motion-ease);
+    }
+    .motion-ready [data-motion-item].is-visible,
+    .motion-ready[data-frame="end"] [data-motion-item],
+    .motion-ready[data-frame="static"] [data-motion-item] {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Interactive Playback Controls */
+    [data-motion-controls] {
+      display: none;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+    }
+    .motion-ready [data-motion-controls] { display: flex; }
+    [data-motion-controls] button {
+      min-width: 44px;
+      min-height: 38px;
+      padding: 6px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      color: var(--color-ink);
+      background: var(--color-bar);
+      font: 500 12px/1 var(--font-mono);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    [data-motion-controls] button:hover { border-color: var(--color-accent); color: var(--color-accent); }
+    [data-motion-controls] button:disabled { cursor: not-allowed; opacity: 0.4; }
+    .keyboard-help {
+      color: var(--color-soft);
+      font-size: 11px;
+      margin-left: 8px;
+    }
+    [data-motion-status-visible] {
+      margin-left: auto;
+      color: var(--color-muted);
+      font-size: 12px;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot accent"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="titlebar-name">claude-code — zero-token-matcher.sh</div>
+    </div>
+    <main class="frame" data-motion-root data-motion-mode="step" data-step-count="3" data-step-current="3" data-frame="static">
+      <p class="eyebrow">Claude Code CLI · While-Typing Matcher · hooks/logic.ts</p>
+      <h1>Zero-Latency Ghost-Text Autocomplete</h1>
+
+      <div class="diagram-container">
+        <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="claude-title claude-desc">
+          <title id="claude-title">Claude Code CLI Zero-Token Ghost-Text Flow</title>
+          <desc id="claude-desc">A 3-step sequence showing real-time prompt typing, whisper ghost-hint expansion via Tab, and verified runbook execution without LLM tokens.</desc>
+          
+          <rect width="900" height="360" fill="#141414" rx="8" />
+          <rect x="16" y="16" width="868" height="328" rx="6" fill="none" stroke="#2b2b2b" stroke-width="1" />
+
+          <!-- Terminal Session Subtitle -->
+          <text x="36" y="52" fill="#9a9a9a" font-family="Geist Mono, monospace" font-size="12">workspace/demo$ claude</text>
+          <text x="36" y="74" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">─── 347 skills mounted locally · zero network latency ───</text>
+
+          <!-- Fixed Chat Input Baseline (Never moves or janks) -->
+          <line x1="36" y1="120" x2="864" y2="120" stroke="#2b2b2b" stroke-width="1" />
+          <text x="36" y="108" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="15">&gt;</text>
+
+          <!-- ================= STEP 1: TYPING & GHOST-HINT ================= -->
+          <g data-motion-item data-step="1" aria-label="Step 1: Developer types natural prompt; whisper hint appears">
+            <text x="56" y="108" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="14">plot monthly revenue breakdown</text>
+            <line x1="325" y1="96" x2="325" y2="112" stroke="#ff5a36" stroke-width="2" />
+
+            <!-- Ghost Hint Box -->
+            <rect x="36" y="140" width="828" height="76" rx="6" fill="#1b1b1b" stroke="#2b2b2b" stroke-width="1" stroke-dasharray="4 4" />
+            <text x="56" y="172" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="13">💬 Skill Whisper Hint: <tspan fill="#ff5a36" font-weight="600">/dataviz</tspan> <tspan fill="#9a9a9a">(Press Tab or ;; to autocomplete)</tspan></text>
+            <text x="56" y="198" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">Stem Match: "revenue", "plot" → dataviz (Chart.js interactive chart engine)</text>
+
+            <text x="36" y="248" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">[Status: Real-time match · 0 LLM calls · 0 tokens · 0.12 ms latency]</text>
+          </g>
+
+          <!-- ================= STEP 2: TAB AUTO-EXPANSION ================= -->
+          <g data-motion-item data-step="2" aria-label="Step 2: Tab pressed; command expands into verified skill runbook">
+            <!-- Overwrites prompt line with expanded command -->
+            <rect x="52" y="90" width="800" height="26" fill="#141414" />
+            <text x="56" y="108" fill="#ff5a36" font-family="Geist Mono, monospace" font-size="14" font-weight="600">/dataviz</text>
+            <text x="135" y="108" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="14">plot monthly revenue breakdown</text>
+            <text x="540" y="108" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">[Expanded via Tab ✓]</text>
+
+            <!-- Active Skill Card -->
+            <rect x="36" y="140" width="828" height="76" rx="6" fill="#1b1b1b" stroke="#2b2b2b" stroke-width="1" />
+            <text x="56" y="172" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="13">✔ Skill Activated: <tspan fill="#ff5a36" font-weight="600">Claude Core / dataviz</tspan></text>
+            <text x="56" y="198" fill="#9a9a9a" font-family="Geist Mono, monospace" font-size="11">Action: Aggregating monthly revenue data into verified Chart.js template...</text>
+
+            <text x="36" y="248" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">[Local execution ready · Token cost: 0 · Context stays clean]</text>
+          </g>
+
+          <!-- ================= STEP 3: RUNBOOK EXECUTION ================= -->
+          <g data-motion-item data-step="3" aria-label="Step 3: Artifact generated using verified runbook instead of improvisation">
+            <!-- Result Card -->
+            <rect x="36" y="268" width="828" height="60" rx="6" fill="#1b1b1b" stroke="#2b2b2b" stroke-width="1" />
+            <text x="56" y="294" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="12">📊 Artifact Generated: <tspan fill="#ff5a36">artifacts/monthly_revenue.html</tspan></text>
+            <text x="56" y="314" fill="#9a9a9a" font-family="Geist Mono, monospace" font-size="11">Enforced verified dataviz runbook template instead of improvising code.</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Verified Canonical Diagram-Design Motion Controls -->
+      <div data-motion-controls role="group" aria-label="Diagram playback controls">
+        <button type="button" data-motion-action="prev">Previous</button>
+        <button type="button" data-motion-action="play" aria-pressed="false">Play</button>
+        <button type="button" data-motion-action="pause" aria-pressed="true">Pause</button>
+        <button type="button" data-motion-action="next">Next</button>
+        <button type="button" data-motion-action="replay">Replay</button>
+        <span class="keyboard-help">←/→ step · Space play/pause · R replay</span>
+        <span data-motion-status-visible aria-hidden="true">Step <span data-motion-step-label>3</span> of 3</span>
+      </div>
+      <p class="sr-only" data-motion-status role="status" aria-live="polite" aria-atomic="true"></p>
+    </main>
+  </div>
+
+  <script data-diagram-controls>
+    (() => {
+      document.querySelectorAll('[data-motion-root]').forEach((root) => {
+        const count = Number(root.dataset.stepCount);
+        const hold = 900;
+        const items = [...root.querySelectorAll('[data-motion-item]')];
+        const controls = root.querySelector('[data-motion-controls]');
+        const status = root.querySelector('[data-motion-status]');
+        const visibleStep = root.querySelector('[data-motion-step-label]');
+        let step = count;
+        let timer = 0;
+        let playing = false;
+
+        const buttons = (action) => controls.querySelector(`[data-motion-action="${action}"]`);
+        const clearClock = () => { window.clearTimeout(timer); timer = 0; };
+
+        function render(next, userInitiated = false) {
+          step = Math.max(0, Math.min(count, next));
+          root.dataset.stepCurrent = String(step);
+          root.dataset.frame = step === count ? 'end' : step === 0 ? 'start' : 'step';
+          items.forEach((item) => {
+            const itemStep = Number(item.dataset.step);
+            item.classList.toggle('is-visible', itemStep <= step);
+            item.classList.toggle('is-current', itemStep === step);
+          });
+          if (visibleStep) visibleStep.textContent = String(step);
+          buttons('prev').disabled = step === 0;
+          buttons('next').disabled = step === count;
+          if (userInitiated && status) status.textContent = `Step ${step} of ${count}`;
+        }
+
+        function pause(userInitiated = false) {
+          clearClock();
+          playing = false;
+          root.classList.remove('is-playing');
+          buttons('play').setAttribute('aria-pressed', 'false');
+          buttons('pause').setAttribute('aria-pressed', 'true');
+        }
+
+        function scheduleNext() {
+          if (!playing) return;
+          if (step >= count) {
+            pause(false);
+            return;
+          }
+          timer = window.setTimeout(() => {
+            render(step + 1);
+            if (step < count) scheduleNext();
+            else pause(false);
+          }, hold);
+        }
+
+        function play() {
+          if (step >= count) render(0);
+          playing = true;
+          root.classList.add('is-playing');
+          buttons('play').setAttribute('aria-pressed', 'true');
+          buttons('pause').setAttribute('aria-pressed', 'false');
+          scheduleNext();
+        }
+
+        buttons('play').addEventListener('click', play);
+        buttons('pause').addEventListener('click', () => pause(true));
+        buttons('replay').addEventListener('click', () => { render(0, true); play(); });
+        buttons('prev').addEventListener('click', () => { pause(true); render(step - 1, true); });
+        buttons('next').addEventListener('click', () => { pause(true); render(step + 1, true); });
+
+        window.addEventListener('keydown', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+          if (e.key === 'ArrowRight') { pause(true); render(step + 1, true); }
+          else if (e.key === 'ArrowLeft') { pause(true); render(step - 1, true); }
+          else if (e.key === ' ' && e.target.tagName !== 'BUTTON') { e.preventDefault(); playing ? pause(true) : play(); }
+          else if (e.key === 'r' || e.key === 'R') { render(0, true); play(); }
+        });
+
+        root.classList.add('motion-ready');
+        render(count);
+      });
+    })();
+  </script>
+</body>
+</html>

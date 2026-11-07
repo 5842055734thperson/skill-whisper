@@ -5,3 +5,11 @@ eval/empty_cwd/
 eval/catalog.json
 .claude-plugin/types/
 __pycache__/
+universal-registry/compiler-rust/target/
+# Built on each machine from what it has installed; would publish that machine's plugin inventory
+universal-registry/skills_registry.json
+universal-registry/local_aliases.json
+universal-registry/generated/
+universal-registry/eval_353_report.json
+universal-registry/test_playground.html
+playground.html

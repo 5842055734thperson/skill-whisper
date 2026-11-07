@@ -105,3 +105,22 @@ Turn the audit's prompts into `eval/matcher_cases.jsonl` (draft, expected skill 
 
 - A model-based ranker. It was measured in v0.3 and costs quota on every request.
 - Matching all 143 skills perfectly in Turkish. Aliases make Turkish coverage grow, but they are hand-made.
+
+## Status (2026-11-07)
+
+Built in v0.9.0, measured with `hooks/matcher.test.ts` (no model calls) and an outside re-check on all 144 Claude skills:
+
+| Fix | State |
+|---|---|
+| 1. Question detection | Done. Question words count only at the start (English) or as markers (Turkish); "iş" is read before folding; polite "can you/we…" and "do a…" are requests; a Turkish draft ending in an action verb is a request. |
+| 2. One common word | Done. A match needs two signals, an alias, or the whole name before it shows unasked. |
+| 3. Only skills are scored | Done. |
+| 4. Built-ins without SKILL.md | Done, from the host's skill listing. |
+| 5. Compound names | Done: "code review" ranks `code-review` first. |
+| 6. Turkish aliases | Done for the listed groups; the alias file now covers 144 skills. |
+| 7. Ties | Done: name coverage, then a bonus for longer exact alias phrases. |
+| 8. Regression test | Done: `hooks/matcher.test.ts`. |
+
+Also fixed in this pass: a UTF-8 BOM hid a skill's front matter (so a manual-only skill lost its flag), macOS decomposed letters split Turkish words, "case study … in ;;" disabled `;;`, and a 50 KB paste took about 230 ms per key (now about 4 ms).
+
+Known gap: a Turkish question that ends in a question word ("efektin adı ne") stays quiet even when a skill fits.

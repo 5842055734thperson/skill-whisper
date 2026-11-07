@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenAI Codex & GitHub Copilot — Routing Matrix Governance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-page: #0a0a0a;
+      --color-paper: #141414;
+      --color-bar: #1b1b1b;
+      --color-border: #2b2b2b;
+      --color-ink: #f5f5f5;
+      --color-muted: #9a9a9a;
+      --color-soft: #5c5c5c;
+      --color-accent: #ff5a36;
+      --color-accent-tint: rgba(255, 90, 54, 0.12);
+      --font-mono: "Geist Mono", ui-monospace, monospace;
+      --font-sans: "Geist", system-ui, sans-serif;
+      --motion-fast: 160ms;
+      --motion-step: 480ms;
+      --motion-hold: 900ms;
+      --motion-ease: cubic-bezier(.2,.8,.2,1);
+    }
+    body {
+      font-family: var(--font-mono);
+      background: var(--color-page);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+    .terminal {
+      width: 100%;
+      max-width: 980px;
+      background: var(--color-paper);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .titlebar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--color-bar);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-soft);
+    }
+    .dot.accent { background: var(--color-accent); }
+    .titlebar-name {
+      flex: 1;
+      text-align: center;
+      color: var(--color-muted);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-right: 46px;
+    }
+    .frame { padding: 2rem 2.25rem; }
+    .eyebrow {
+      color: var(--color-muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      margin-bottom: 1.25rem;
+    }
+    h1::before { content: "# "; color: var(--color-soft); }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    svg { width: 100%; min-width: 880px; display: block; }
+
+    /* Motion Items Progressive Enhancement */
+    .motion-ready [data-motion-item] {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity var(--motion-step) var(--motion-ease), transform var(--motion-step) var(--motion-ease);
+    }
+    .motion-ready [data-motion-item].is-visible,
+    .motion-ready[data-frame="end"] [data-motion-item],
+    .motion-ready[data-frame="static"] [data-motion-item] {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Interactive Playback Controls */
+    [data-motion-controls] {
+      display: none;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+    }
+    .motion-ready [data-motion-controls] { display: flex; }
+    [data-motion-controls] button {
+      min-width: 44px;
+      min-height: 38px;
+      padding: 6px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      color: var(--color-ink);
+      background: var(--color-bar);
+      font: 500 12px/1 var(--font-mono);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    [data-motion-controls] button:hover { border-color: var(--color-accent); color: var(--color-accent); }
+    [data-motion-controls] button:disabled { cursor: not-allowed; opacity: 0.4; }
+    .keyboard-help {
+      color: var(--color-soft);
+      font-size: 11px;
+      margin-left: 8px;
+    }
+    [data-motion-status-visible] {
+      margin-left: auto;
+      color: var(--color-muted);
+      font-size: 12px;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="titlebar">
+      <div class="dot accent"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="titlebar-name">copilot — matrix-governance.sh</div>
+    </div>
+    <main class="frame" data-motion-root data-motion-mode="step" data-step-count="3" data-step-current="3" data-frame="static">
+      <p class="eyebrow">OpenAI Codex & Copilot · Matrix Governance · .github/copilot-instructions.md</p>
+      <h1>Deterministic Routing Matrix Governance</h1>
+
+      <div class="diagram-container">
+        <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="copilot-title copilot-desc">
+          <title id="copilot-title">OpenAI Codex & Copilot Matrix Governance Flow</title>
+          <desc id="copilot-desc">A 3-step sequence showing inline editor comment intake, routing table matching, and runbook-governed code completion.</desc>
+          
+          <rect width="900" height="360" fill="#141414" rx="8" />
+          <rect x="16" y="16" width="868" height="328" rx="6" fill="none" stroke="#2b2b2b" stroke-width="1" />
+
+          <!-- Session Subtitle -->
+          <text x="36" y="52" fill="#9a9a9a" font-family="Geist Mono, monospace" font-size="12">editor: src/deploy/canary.ts</text>
+          <text x="36" y="74" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">─── Copilot Instruction Matrix Active · Runbook-Governed Completion ───</text>
+
+          <!-- Fixed Chat / Editor Baseline -->
+          <line x1="36" y1="120" x2="864" y2="120" stroke="#2b2b2b" stroke-width="1" />
+          <text x="36" y="108" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="14">// Prompt: build kubernetes canary rollback deployment</text>
+
+          <!-- ================= STEP 1: MATRIX SCAN ================= -->
+          <g data-motion-item data-step="1" aria-label="Step 1: Developer writes inline comment; Copilot checks routing matrix">
+            <line x1="520" y1="96" x2="520" y2="112" stroke="#ff5a36" stroke-width="2" />
+
+            <!-- Matrix Query Box -->
+            <rect x="36" y="140" width="828" height="76" rx="6" fill="#1b1b1b" stroke="#2b2b2b" stroke-width="1" stroke-dasharray="4 4" />
+            <text x="56" y="172" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="13">🧭 Matrix Scan: Scanning .github/copilot-instructions.md...</text>
+            <text x="56" y="198" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">Matched Tokens: "kubernetes", "canary rollback", "drain pods" (Matrix lookup)</text>
+
+            <text x="36" y="248" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">[Matrix Check: Matching runbook rules across 347 universal skills]</text>
+          </g>
+
+          <!-- ================= STEP 2: MATRIX TABLE MATCH ================= -->
+          <g data-motion-item data-step="2" aria-label="Step 2: Matrix row match found; ad-hoc code generation blocked">
+            <!-- Table Box -->
+            <rect x="36" y="140" width="828" height="76" rx="6" fill="#1b1b1b" stroke="#2b2b2b" stroke-width="1" />
+            <line x1="36" y1="172" x2="864" y2="172" stroke="#2b2b2b" stroke-width="1" stroke-dasharray="4 4" />
+            <line x1="180" y1="140" x2="180" y2="216" stroke="#2b2b2b" stroke-width="1" stroke-dasharray="4 4" />
+            <line x1="440" y1="140" x2="440" y2="216" stroke="#2b2b2b" stroke-width="1" stroke-dasharray="4 4" />
+
+            <!-- Header Cells -->
+            <text x="50" y="162" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">PLUGIN</text>
+            <text x="194" y="162" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">MATCHED SKILL</text>
+            <text x="454" y="162" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">TRIGGER INTENT</text>
+
+            <!-- Row Cells -->
+            <text x="50" y="198" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="12">acme-devops</text>
+            <text x="194" y="198" fill="#ff5a36" font-family="Geist Mono, monospace" font-size="12" font-weight="600">k8s-canary-rollback</text>
+            <text x="454" y="198" fill="#9a9a9a" font-family="Geist Mono, monospace" font-size="11">canary rollback, drain pods, restore traffic</text>
+
+            <text x="36" y="248" fill="#5c5c5c" font-family="Geist Mono, monospace" font-size="11">[Matrix Matched: Improvisation prevented · Team runbook standard selected]</text>
+          </g>
+
+          <!-- ================= STEP 3: CODE COMPLETION ================= -->
+          <g data-motion-item data-step="3" aria-label="Step 3: Runbook-governed code completion suggested in editor">
+            <!-- Code Block Box -->
+            <rect x="36" y="268" width="828" height="60" rx="6" fill="#1b1b1b" stroke="#2b2b2b" stroke-width="1" />
+            <text x="56" y="292" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="12">14 | const canary = await k8s.getCanaryDeployment('service-api');</text>
+            <text x="56" y="312" fill="#f5f5f5" font-family="Geist Mono, monospace" font-size="12">15 | if (canary.errorRate &gt; 0.05) await drainPodsAndRestoreTraffic();</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Verified Canonical Diagram-Design Motion Controls -->
+      <div data-motion-controls role="group" aria-label="Diagram playback controls">
+        <button type="button" data-motion-action="prev">Previous</button>
+        <button type="button" data-motion-action="play" aria-pressed="false">Play</button>
+        <button type="button" data-motion-action="pause" aria-pressed="true">Pause</button>
+        <button type="button" data-motion-action="next">Next</button>
+        <button type="button" data-motion-action="replay">Replay</button>
+        <span class="keyboard-help">←/→ step · Space play/pause · R replay</span>
+        <span data-motion-status-visible aria-hidden="true">Step <span data-motion-step-label>3</span> of 3</span>
+      </div>
+      <p class="sr-only" data-motion-status role="status" aria-live="polite" aria-atomic="true"></p>
+    </main>
+  </div>
+
+  <script data-diagram-controls>
+    (() => {
+      document.querySelectorAll('[data-motion-root]').forEach((root) => {
+        const count = Number(root.dataset.stepCount);
+        const hold = 900;
+        const items = [...root.querySelectorAll('[data-motion-item]')];
+        const controls = root.querySelector('[data-motion-controls]');
+        const status = root.querySelector('[data-motion-status]');
+        const visibleStep = root.querySelector('[data-motion-step-label]');
+        let step = count;
+        let timer = 0;
+        let playing = false;
+
+        const buttons = (action) => controls.querySelector(`[data-motion-action="${action}"]`);
+        const clearClock = () => { window.clearTimeout(timer); timer = 0; };
+
+        function render(next, userInitiated = false) {
+          step = Math.max(0, Math.min(count, next));
+          root.dataset.stepCurrent = String(step);
+          root.dataset.frame = step === count ? 'end' : step === 0 ? 'start' : 'step';
+          items.forEach((item) => {
+            const itemStep = Number(item.dataset.step);
+            item.classList.toggle('is-visible', itemStep <= step);
+            item.classList.toggle('is-current', itemStep === step);
+          });
+          if (visibleStep) visibleStep.textContent = String(step);
+          buttons('prev').disabled = step === 0;
+          buttons('next').disabled = step === count;
+          if (userInitiated && status) status.textContent = `Step ${step} of ${count}`;
+        }
+
+        function pause(userInitiated = false) {
+          clearClock();
+          playing = false;
+          root.classList.remove('is-playing');
+          buttons('play').setAttribute('aria-pressed', 'false');
+          buttons('pause').setAttribute('aria-pressed', 'true');
+        }
+
+        function scheduleNext() {
+          if (!playing) return;
+          if (step >= count) {
+            pause(false);
+            return;
+          }
+          timer = window.setTimeout(() => {
+            render(step + 1);
+            if (step < count) scheduleNext();
+            else pause(false);
+          }, hold);
+        }
+
+        function play() {
+          if (step >= count) render(0);
+          playing = true;
+          root.classList.add('is-playing');
+          buttons('play').setAttribute('aria-pressed', 'true');
+          buttons('pause').setAttribute('aria-pressed', 'false');
+          scheduleNext();
+        }
+
+        buttons('play').addEventListener('click', play);
+        buttons('pause').addEventListener('click', () => pause(true));
+        buttons('replay').addEventListener('click', () => { render(0, true); play(); });
+        buttons('prev').addEventListener('click', () => { pause(true); render(step - 1, true); });
+        buttons('next').addEventListener('click', () => { pause(true); render(step + 1, true); });
+
+        window.addEventListener('keydown', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+          if (e.key === 'ArrowRight') { pause(true); render(step + 1, true); }
+          else if (e.key === 'ArrowLeft') { pause(true); render(step - 1, true); }
+          else if (e.key === ' ' && e.target.tagName !== 'BUTTON') { e.preventDefault(); playing ? pause(true) : play(); }
+          else if (e.key === 'r' || e.key === 'R') { render(0, true); play(); }
+        });
+
+        root.classList.add('motion-ready');
+        render(count);
+      });
+    })();
+  </script>
+</body>
+</html>
